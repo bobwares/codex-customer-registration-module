@@ -1,0 +1,12 @@
+# /**
+# * App: Customer Registration Module
+# * Package: root
+# * File: .nvmrc
+# * Version: 0.1.0
+# * Turns: 1
+# * Author: gpt-5-codex
+# * Date: 2025-10-07T00:00:00Z
+# * Exports: node version
+# * Description: Node.js runtime version pin for the registration module tooling.
+# */
+20

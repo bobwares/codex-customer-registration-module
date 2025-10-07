@@ -1,0 +1,14 @@
+# /**
+# * App: Customer Registration Module
+# * Package: root
+# * File: .prettierrc
+# * Version: 0.1.0
+# * Turns: 1
+# * Author: gpt-5-codex
+# * Date: 2025-10-07T00:00:00Z
+# * Exports: Prettier configuration
+# * Description: Prettier formatting defaults for the registration module codebase.
+# */
+printWidth: 100
+singleQuote: true
+trailingComma: es5
