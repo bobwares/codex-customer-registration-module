@@ -120,3 +120,10 @@ hs_err_pid*
 tmp/
 scratch/
 sandbox/
+
+### Playwright ###
+playwright-report/
+test-results/
+
+### Turbo Cache ###
+.turbo/

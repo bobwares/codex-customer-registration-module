@@ -1,0 +1,52 @@
+# **
+# * App: Customer Registration Module
+# * Package: ci
+# * File: ci.yml
+# * Version: 0.1.0
+# * Turns: 1
+# * Author: Bobwares (bobwares@outlook.com)
+# * Date: 2025-10-07T18:19:47Z
+# * Exports: Continuous integration workflow
+# * Description: Runs linting, type checking, unit tests, and Playwright dry-run
+# *              to ensure the Next.js registration app remains healthy.
+# */
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:ci
+
+      - name: Playwright install
+        run: npx playwright install --with-deps
+
+      - name: E2E dry run
+        run: npm run e2e:ci -- --reporter=list --timeout=30000
+        env:
+          CI: "true"

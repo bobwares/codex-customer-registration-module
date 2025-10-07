@@ -1,0 +1,27 @@
+/**
+ * App: Customer Registration Module
+ * Package: src/app
+ * File: globals.css
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: Bobwares (bobwares@outlook.com)
+ * Date: 2025-10-07T18:19:47Z
+ * Exports: Tailwind directives
+ * Description: Defines global Tailwind layers and base styles for the
+ *              registration experience.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-neutral-50 text-neutral-900 antialiased;
+}
+
+a {
+  @apply text-primary underline-offset-4 hover:underline;
+}
