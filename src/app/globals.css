@@ -1,0 +1,36 @@
+/**
+ * App: Customer Registration Module
+ * Package: src/app
+ * File: globals.css
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: gpt-5-codex
+ * Date: 2025-10-07T00:00:00Z
+ * Exports: Tailwind layers, global styles
+ * Description: Global stylesheet defining Tailwind layers and theming tokens for the registration experience.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  color: #0f172a;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  padding: 2rem;
+}

@@ -1,0 +1,50 @@
+{
+  "name": "customer-registration-module",
+  "version": "0.1.0",
+  "description": "Customer Registration Module web experience scaffolded with Next.js App Router and Tailwind CSS.",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:ci": "vitest run --passWithNoTests --reporter=junit",
+    "e2e": "playwright test",
+    "e2e:ci": "playwright test --reporter=junit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.0",
+    "next": "15.0.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-hook-form": "^7.53.0",
+    "zod": "^3.23.8",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.2",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^20.17.5",
+    "@types/react": "19.0.3",
+    "@types/react-dom": "19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^9.14.0",
+    "eslint-config-next": "15.0.3",
+    "postcss": "^8.4.49",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.14",
+    "typescript": "5.9.3",
+    "vitest": "^2.1.4",
+    "@vitest/coverage-v8": "^2.1.4",
+    "jsdom": "^24.1.3"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

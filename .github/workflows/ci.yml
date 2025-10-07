@@ -1,0 +1,46 @@
+# /**
+# * App: Customer Registration Module
+# * Package: .github/workflows
+# * File: ci.yml
+# * Version: 0.1.0
+# * Turns: 1
+# * Author: gpt-5-codex
+# * Date: 2025-10-07T00:00:00Z
+# * Exports: GitHub Actions workflow
+# * Description: Continuous integration workflow running lint, typecheck, unit, and e2e tasks.
+# */
+name: CI
+
+on:
+  push:
+    branches: [work]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: E2E tests
+        run: npm run e2e
