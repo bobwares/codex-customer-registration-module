@@ -1,0 +1,26 @@
+/**
+ * App: Customer Registration Module
+ * Package: customer-registration-module
+ * File: src/app/globals.css
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: AI Coding Agent
+ * Date: 2025-10-07T19:43:17Z
+ * Exports: Tailwind base styles
+ * Description: Global stylesheet wiring Tailwind layers and base typography tokens.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+a {
+  @apply text-brand-600 underline-offset-2 hover:text-brand-500;
+}
