@@ -1,0 +1,17 @@
+{
+  "_metadataHeader": {
+    "app": "Customer Registration Module",
+    "package": "customer-registration-module",
+    "file": ".prettierrc",
+    "version": "0.1.0",
+    "turns": [1],
+    "author": "AI Coding Agent",
+    "date": "2025-10-07T19:43:17Z",
+    "exports": [],
+    "description": "Prettier formatting configuration for the registration module."
+  },
+  "singleQuote": true,
+  "semi": true,
+  "trailingComma": "all",
+  "printWidth": 90
+}

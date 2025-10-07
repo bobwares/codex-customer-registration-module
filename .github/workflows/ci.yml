@@ -1,0 +1,40 @@
+# App: Customer Registration Module
+# Package: customer-registration-module
+# File: .github/workflows/ci.yml
+# Version: 0.1.0
+# Turns: [1]
+# Author: AI Coding Agent
+# Date: 2025-10-07T19:43:17Z
+# Exports: ci
+# Description: Continuous integration workflow running linting, type checks, unit tests, and Playwright smoke tests.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit tests
+        run: npm run test:ci
+      - name: Playwright install
+        run: npx playwright install --with-deps
+      - name: E2E tests
+        run: npm run e2e:ci
