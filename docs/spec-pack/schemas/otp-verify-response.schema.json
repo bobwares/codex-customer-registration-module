@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/otp-verify-response.json",
+  "title": "OtpVerifyResponse",
+  "type": "object",
+  "required": ["registrationId", "status", "verifiedAt"],
+  "properties": {
+    "registrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "enum": ["verified", "already_verified"]
+    },
+    "verifiedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

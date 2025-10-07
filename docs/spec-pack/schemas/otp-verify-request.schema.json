@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/otp-verify-request.json",
+  "title": "OtpVerifyRequest",
+  "type": "object",
+  "required": ["registrationId", "code"],
+  "properties": {
+    "registrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[0-9]{6,8}$"
+    },
+    "channel": {
+      "enum": ["email", "sms"]
+    }
+  },
+  "additionalProperties": false
+}

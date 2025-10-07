@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/register-start-request.json",
+  "title": "RegisterStartRequest",
+  "type": "object",
+  "required": ["email", "password", "locale", "channelPreferences"],
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "maxLength": 254
+    },
+    "password": {
+      "type": "string",
+      "minLength": 12,
+      "pattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,}$"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}-[A-Z]{2}$",
+      "examples": ["en-US"]
+    },
+    "channelPreferences": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "enum": ["email", "sms"]
+        },
+        "secondary": {
+          "enum": ["email", "sms", null]
+        }
+      },
+      "required": ["primary"],
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 200
+      }
+    }
+  },
+  "additionalProperties": false
+}

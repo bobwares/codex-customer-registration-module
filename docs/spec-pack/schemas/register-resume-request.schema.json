@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/register-resume-request.json",
+  "title": "RegisterResumeRequest",
+  "type": "object",
+  "required": ["registrationId"],
+  "properties": {
+    "registrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "personal": {
+      "$ref": "register-complete-request.schema.json#/definitions/PersonalInfo"
+    },
+    "preferences": {
+      "$ref": "register-complete-request.schema.json#/definitions/PreferenceRecord"
+    },
+    "consent": {
+      "$ref": "register-complete-request.schema.json#/definitions/ConsentRecord"
+    }
+  },
+  "additionalProperties": false
+}
