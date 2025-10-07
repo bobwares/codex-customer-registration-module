@@ -8,11 +8,14 @@
  * Date: 2025-10-07T00:00:00Z
  * Exports: compilerOptions, include, exclude
  * Description: TypeScript configuration enabling strict Next.js App Router project compilation with module resolution aligned to src directory.
- */
-{
+ */{
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ES2023"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2023"
+    ],
     "allowJs": false,
     "skipLibCheck": false,
     "strict": true,
@@ -27,17 +30,29 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-    "types": ["@testing-library/jest-dom"]
+    "types": [
+      "@testing-library/jest-dom"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
-    "env.d.ts",
+    "**/*.cjs",
+    "**/*.js",
+    "**/*.mjs",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js",
-    "**/*.cjs",
-    "**/*.mjs"
+    "env.d.ts",
+    ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

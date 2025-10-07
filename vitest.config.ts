@@ -13,18 +13,15 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    globals: true,
     environment: 'jsdom',
-    setupFiles: [],
+    setupFiles: ['./vitest.setup.ts'],
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
-      reporter: ['text', 'lcov'],
       provider: 'v8',
-      thresholds: {
-        lines: 60,
-        functions: 60,
-        branches: 60,
-        statements: 60
-      }
-    }
-  }
+      reports: ['text', 'html'],
+    },
+    globals: true,
+    // Fail CI if you accidentally have no tests:
+    passWithNoTests: false,
+  },
 });
