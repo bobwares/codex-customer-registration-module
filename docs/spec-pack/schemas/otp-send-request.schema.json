@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/otp-send-request.json",
+  "title": "OtpSendRequest",
+  "type": "object",
+  "required": ["registrationId", "channel"],
+  "properties": {
+    "registrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "channel": {
+      "enum": ["email", "sms"]
+    },
+    "resend": {
+      "type": "boolean",
+      "default": false
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}-[A-Z]{2}$"
+    }
+  },
+  "additionalProperties": false
+}

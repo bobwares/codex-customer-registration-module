@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/register-complete-request.json",
+  "title": "RegisterCompleteRequest",
+  "type": "object",
+  "required": ["registrationId", "personal", "consent", "preferences"],
+  "properties": {
+    "registrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "personal": {
+      "$ref": "#/definitions/PersonalInfo"
+    },
+    "consent": {
+      "$ref": "#/definitions/ConsentRecord"
+    },
+    "preferences": {
+      "$ref": "#/definitions/PreferenceRecord"
+    },
+    "marketingOptInEvidence": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "deviceFingerprint": {
+      "type": "string",
+      "maxLength": 255
+    }
+  },
+  "definitions": {
+    "PersonalInfo": {
+      "type": "object",
+      "required": ["firstName", "lastName", "country", "language"],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "lastName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[a-z]{2}-[A-Z]{2}$"
+        },
+        "phone": {
+          "type": "string",
+          "pattern": "^\\+?[0-9]{7,15}$"
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "address": {
+          "$ref": "#/definitions/PostalAddress"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PostalAddress": {
+      "type": "object",
+      "properties": {
+        "line1": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "line2": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "region": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "postalCode": {
+          "type": "string",
+          "maxLength": 20
+        }
+      },
+      "additionalProperties": false
+    },
+    "ConsentRecord": {
+      "type": "object",
+      "required": ["marketing", "timestamp", "jurisdiction"],
+      "properties": {
+        "marketing": {
+          "type": "boolean"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "ipAddress": {
+          "type": "string",
+          "format": "ipv4"
+        },
+        "userAgent": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "evidenceId": {
+          "type": "string",
+          "maxLength": 100
+        }
+      },
+      "additionalProperties": false
+    },
+    "PreferenceRecord": {
+      "type": "object",
+      "properties": {
+        "commsChannel": {
+          "enum": ["email", "sms", "none"]
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[a-z]{2}-[A-Z]{2}$"
+        },
+        "newsletterTopics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "maxItems": 10
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/register-status-response.json",
+  "title": "RegisterStatusResponse",
+  "type": "object",
+  "required": ["registrationId", "status", "step", "expiresAt", "lastUpdatedAt"],
+  "properties": {
+    "registrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "status": {
+      "enum": ["pending", "verified", "completed", "expired"]
+    },
+    "step": {
+      "enum": ["start", "otp_required", "otp_verified", "complete"]
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastUpdatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

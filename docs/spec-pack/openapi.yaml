@@ -1,0 +1,533 @@
+openapi: 3.1.0
+info:
+  title: Customer Registration API
+  version: 0.1.0
+  description: |
+    Contract-first API definition for the customer registration module.
+    Implements FR-1 through FR-7 of the PRD with consistent error and
+    observability headers.
+servers:
+  - url: https://api.example.com
+    description: Production gateway
+  - url: https://staging-api.example.com
+    description: Staging environment
+security:
+  - RateLimitToken: []
+  - ClientId: []
+paths:
+  /register/start:
+    post:
+      summary: Start registration with email and password
+      operationId: startRegistration
+      tags: [Registration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterStartRequest'
+      responses:
+        '202':
+          description: Registration started, OTP verification required
+          headers:
+            X-Registration-Id:
+              description: Correlation ID for registration session
+              schema:
+                type: string
+                format: uuid
+            X-Next-Step:
+              description: Next action required by the client
+              schema:
+                type: string
+                enum: [otp_required]
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterStartResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Duplicate'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /otp/send:
+    post:
+      summary: Send OTP via email or SMS
+      operationId: sendOtp
+      tags: [Registration, OTP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSendRequest'
+      responses:
+        '204':
+          description: OTP sent successfully
+          headers:
+            X-RateLimit-Remaining:
+              description: Remaining OTP sends allowed in the current window
+              schema:
+                type: integer
+            Retry-After:
+              description: Seconds until the next send is allowed when throttled
+              schema:
+                type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Registration session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Registration already verified or completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /otp/verify:
+    post:
+      summary: Verify a one-time passcode
+      operationId: verifyOtp
+      tags: [Registration, OTP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpVerifyRequest'
+      responses:
+        '200':
+          description: OTP validated and registration unlocked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpVerifyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: OTP incorrect or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Registration session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /register/complete:
+    post:
+      summary: Complete registration with personal data, consent, and preferences
+      operationId: completeRegistration
+      tags: [Registration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterCompleteRequest'
+      responses:
+        '201':
+          description: Customer created successfully
+          headers:
+            X-Customer-Id:
+              description: Newly created customer identifier
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterCompleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Registration not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/Duplicate'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /register/status:
+    get:
+      summary: Retrieve current registration state for resumption
+      operationId: getRegistrationStatus
+      tags: [Registration]
+      parameters:
+        - name: registrationId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Current registration state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterStatusResponse'
+        '404':
+          description: Registration session not found or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /register/resume:
+    patch:
+      summary: Resume an incomplete registration with updated data
+      operationId: resumeRegistration
+      tags: [Registration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterResumeRequest'
+      responses:
+        '200':
+          description: Registration resumed and latest state returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterStatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Registration session not found or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Registration already completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    RateLimitToken:
+      type: apiKey
+      in: header
+      name: X-RateLimit-Token
+      description: Token used to allocate rate limit buckets per partner/client
+    ClientId:
+      type: apiKey
+      in: header
+      name: X-Client-Id
+      description: Static client identifier issued to registered applications
+  responses:
+    BadRequest:
+      description: Validation or policy error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Duplicate:
+      description: Duplicate customer detected
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorResponse'
+              - type: object
+                properties:
+                  error:
+                    properties:
+                      code:
+                        enum: [E_DUPLICATE]
+                      hint:
+                        description: Safe messaging to guide user to recovery
+                        type: string
+    TooManyRequests:
+      description: Throttled due to rate limits or abuse controls
+      headers:
+        Retry-After:
+          description: Seconds until the client may retry
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code
+            message:
+              type: string
+              description: Localizable error summary
+            fieldErrors:
+              type: array
+              items:
+                type: object
+                required: [field, message]
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+            correlationId:
+              type: string
+              description: Log correlation identifier
+    RegisterStartRequest:
+      type: object
+      required: [email, password, locale, channelPreferences]
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+        password:
+          $ref: '#/components/schemas/Password'
+        locale:
+          $ref: '#/components/schemas/Locale'
+        channelPreferences:
+          type: object
+          description: Preferred OTP delivery channels ranked
+          properties:
+            primary:
+              $ref: '#/components/schemas/OtpChannel'
+            secondary:
+              $ref: '#/components/schemas/OtpChannel'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional partner-specific metadata captured at start
+    RegisterStartResponse:
+      type: object
+      required: [registrationId, nextStep, expiresAt]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        nextStep:
+          type: string
+          enum: [otp_required]
+        expiresAt:
+          type: string
+          format: date-time
+        otp:
+          type: object
+          properties:
+            channel:
+              $ref: '#/components/schemas/OtpChannel'
+            expirySeconds:
+              type: integer
+    OtpSendRequest:
+      type: object
+      required: [registrationId, channel]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        channel:
+          $ref: '#/components/schemas/OtpChannel'
+        resend:
+          type: boolean
+          default: false
+        locale:
+          $ref: '#/components/schemas/Locale'
+    OtpVerifyRequest:
+      type: object
+      required: [registrationId, code]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        code:
+          type: string
+          minLength: 6
+          maxLength: 8
+          pattern: '^[0-9]{6,8}$'
+        channel:
+          $ref: '#/components/schemas/OtpChannel'
+    OtpVerifyResponse:
+      type: object
+      required: [registrationId, status]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [verified, already_verified]
+        verifiedAt:
+          type: string
+          format: date-time
+    RegisterCompleteRequest:
+      type: object
+      required: [registrationId, personal, consent, preferences]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        personal:
+          $ref: '#/components/schemas/PersonalInfo'
+        consent:
+          $ref: '#/components/schemas/ConsentRecord'
+        preferences:
+          $ref: '#/components/schemas/PreferenceRecord'
+        marketingOptInEvidence:
+          type: string
+          description: Hash of consent text shown to user for audit
+        deviceFingerprint:
+          type: string
+          description: Optional device fingerprint token for risk checks
+    RegisterCompleteResponse:
+      type: object
+      required: [customerId, registrationId, status]
+      properties:
+        customerId:
+          type: string
+        registrationId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [completed]
+        createdAt:
+          type: string
+          format: date-time
+    RegisterStatusResponse:
+      type: object
+      required: [registrationId, status, step, expiresAt]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, verified, completed, expired]
+        step:
+          type: string
+          enum: [start, otp_required, otp_verified, complete]
+        expiresAt:
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          type: string
+          format: date-time
+    RegisterResumeRequest:
+      type: object
+      required: [registrationId]
+      properties:
+        registrationId:
+          type: string
+          format: uuid
+        personal:
+          $ref: '#/components/schemas/PersonalInfo'
+        preferences:
+          $ref: '#/components/schemas/PreferenceRecord'
+        consent:
+          $ref: '#/components/schemas/ConsentRecord'
+    PersonalInfo:
+      type: object
+      required: [firstName, lastName, country, language]
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+        language:
+          $ref: '#/components/schemas/Locale'
+        phone:
+          type: string
+          pattern: '^\+?[0-9]{7,15}$'
+        birthDate:
+          type: string
+          format: date
+        address:
+          $ref: '#/components/schemas/PostalAddress'
+    PostalAddress:
+      type: object
+      properties:
+        line1:
+          type: string
+          maxLength: 200
+        line2:
+          type: string
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 120
+        region:
+          type: string
+          maxLength: 120
+        postalCode:
+          type: string
+          maxLength: 20
+    ConsentRecord:
+      type: object
+      required: [marketing, timestamp, jurisdiction]
+      properties:
+        marketing:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+        jurisdiction:
+          type: string
+        ipAddress:
+          type: string
+          format: ipv4
+        userAgent:
+          type: string
+        evidenceId:
+          type: string
+    PreferenceRecord:
+      type: object
+      properties:
+        commsChannel:
+          type: string
+          enum: [email, sms, none]
+        language:
+          $ref: '#/components/schemas/Locale'
+        newsletterTopics:
+          type: array
+          items:
+            type: string
+    Password:
+      type: string
+      minLength: 12
+      pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,}$'
+      description: Strong password policy aligned with Security guidance
+    Email:
+      type: string
+      format: email
+      maxLength: 254
+    Locale:
+      type: string
+      example: en-US
+    OtpChannel:
+      type: string
+      enum: [email, sms]
+    RegistrationStateToken:
+      type: string
+      description: Signed token representing registration state
+
