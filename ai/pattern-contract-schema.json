@@ -1,0 +1,381 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bobwares.dev/schemas/customer-registration-wizard.pcs.v1.json",
+  "title": "Pattern Contract Schema: Customer Registration Wizard v1",
+  "type": "object",
+  "required": ["wizard_version", "name", "description", "steps", "apis"],
+  "properties": {
+    "wizard_version": { "type": "string", "const": "1.0.0" },
+    "name": { "type": "string", "minLength": 1, "default": "Customer Registration Wizard" },
+    "description": { "type": "string", "minLength": 1 },
+
+    "ui": {
+      "type": "object",
+      "description": "Optional UI hints for routing and rendering",
+      "properties": {
+        "base_path": { "type": "string", "default": "/register" },
+        "allow_section_edit_links": { "type": "boolean", "default": true }
+      },
+      "additionalProperties": false
+    },
+
+    "steps": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "kind", "path", "fields"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_\\-]+$" },
+          "title": { "type": "string" },
+          "kind": { "type": "string", "enum": ["form", "review"] },
+          "path": { "type": "string", "pattern": "^/.*" },
+          "fields": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/field" },
+            "default": []
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "apis": {
+      "type": "object",
+      "required": ["check_unique_email", "submit_registration"],
+      "properties": {
+        "check_unique_email": {
+          "type": "object",
+          "required": ["method", "route", "request_schema", "response_schema", "mocks"],
+          "properties": {
+            "method": { "type": "string", "const": "POST" },
+            "route": { "type": "string", "const": "/api/registration/check-email" },
+            "request_schema": {
+              "type": "object",
+              "required": ["email"],
+              "properties": {
+                "email": { "$ref": "#/$defs/email" }
+              },
+              "additionalProperties": false
+            },
+            "response_schema": {
+              "type": "object",
+              "required": ["is_unique"],
+              "properties": {
+                "is_unique": { "type": "boolean" },
+                "message": { "type": "string" }
+              },
+              "additionalProperties": false
+            },
+            "mocks": {
+              "type": "array",
+              "description": "Ordered mock rules for deterministic responses",
+              "items": {
+                "type": "object",
+                "required": ["when", "respond"],
+                "properties": {
+                  "when": {
+                    "type": "object",
+                    "properties": {
+                      "equals": {
+                        "type": "object",
+                        "properties": {
+                          "email": { "type": "string" }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "respond": {
+                    "type": "object",
+                    "required": ["status", "body"],
+                    "properties": {
+                      "status": { "type": "integer" },
+                      "body": { "type": "object" }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              },
+              "default": [
+                {
+                  "when": { "equals": { "email": "bobwares@outlook.com" } },
+                  "respond": { "status": 409, "body": { "is_unique": false, "message": "Email already registered." } }
+                },
+                {
+                  "when": { "equals": { "email": "*" } },
+                  "respond": { "status": 200, "body": { "is_unique": true, "message": "OK" } }
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+
+        "submit_registration": {
+          "type": "object",
+          "required": ["method", "route", "request_schema", "response_schema", "mocks"],
+          "properties": {
+            "method": { "type": "string", "const": "POST" },
+            "route": { "type": "string", "const": "/api/registration/submit" },
+            "request_schema": {
+              "type": "object",
+              "required": ["credentials", "person", "addresses", "preferences"],
+              "properties": {
+                "credentials": { "$ref": "#/$defs/credentials" },
+                "person": { "$ref": "#/$defs/person" },
+                "addresses": { "$ref": "#/$defs/addresses" },
+                "preferences": { "$ref": "#/$defs/preferences" }
+              },
+              "additionalProperties": false
+            },
+            "response_schema": {
+              "type": "object",
+              "required": ["registration_id", "status"],
+              "properties": {
+                "registration_id": { "type": "string" },
+                "status": { "type": "string", "enum": ["accepted", "pending_review"] }
+              },
+              "additionalProperties": false
+            },
+            "mocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["respond"],
+                "properties": {
+                  "respond": {
+                    "type": "object",
+                    "required": ["status", "body"],
+                    "properties": {
+                      "status": { "type": "integer", "default": 201 },
+                      "body": {
+                        "type": "object",
+                        "properties": {
+                          "registration_id": { "type": "string", "default": "REG-123456" },
+                          "status": { "type": "string", "const": "accepted" }
+                        },
+                        "required": ["registration_id", "status"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              },
+              "default": [
+                { "respond": { "status": 201, "body": { "registration_id": "REG-123456", "status": "accepted" } } }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "$defs": {
+    "email": { "type": "string", "format": "email", "maxLength": 254 },
+    "password": { "type": "string", "minLength": 12, "maxLength": 128 },
+    "name_part": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "middle_initial": { "type": "string", "pattern": "^[A-Za-z]$", "maxLength": 1 },
+    "date_yyyy_mm_dd": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "sex": { "type": "string", "enum": ["male", "female", "intersex", "unspecified"] },
+
+    "address": {
+      "type": "object",
+      "required": ["line1", "city", "state", "postal_code", "country"],
+      "properties": {
+        "line1": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "line2": { "type": "string", "maxLength": 200 },
+        "city": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "state": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "postal_code": { "type": "string", "minLength": 3, "maxLength": 20 },
+        "country": { "type": "string", "minLength": 2, "maxLength": 100 }
+      },
+      "additionalProperties": false
+    },
+
+    "credentials": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": { "$ref": "#/$defs/email" },
+        "password": { "$ref": "#/$defs/password" }
+      },
+      "additionalProperties": false
+    },
+
+    "person": {
+      "type": "object",
+      "required": ["first_name", "last_name", "dob", "sex"],
+      "properties": {
+        "first_name": { "$ref": "#/$defs/name_part" },
+        "last_name": { "$ref": "#/$defs/name_part" },
+        "middle_initial": { "$ref": "#/$defs/middle_initial" },
+        "dob": { "$ref": "#/$defs/date_yyyy_mm_dd" },
+        "sex": { "$ref": "#/$defs/sex" }
+      },
+      "additionalProperties": false
+    },
+
+    "addresses": {
+      "type": "object",
+      "required": ["home", "mailing_same_as_home"],
+      "properties": {
+        "home": { "$ref": "#/$defs/address" },
+        "mailing_same_as_home": { "type": "boolean", "default": true },
+        "mailing": { "$ref": "#/$defs/address" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mailing_same_as_home": { "const": false } } },
+          "then": { "required": ["mailing"] }
+        }
+      ],
+      "additionalProperties": false
+    },
+
+    "preferences": {
+      "type": "object",
+      "required": ["mail", "notifications"],
+      "properties": {
+        "mail": {
+          "type": "string",
+          "enum": ["paperless", "postal", "both"],
+          "default": "paperless"
+        },
+        "notifications": {
+          "type": "object",
+          "required": ["email", "sms", "push", "frequency"],
+          "properties": {
+            "email": { "type": "boolean", "default": true },
+            "sms": { "type": "boolean", "default": false },
+            "push": { "type": "boolean", "default": false },
+            "frequency": { "type": "string", "enum": ["immediate", "daily", "weekly"], "default": "immediate" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "field": {
+      "type": "object",
+      "required": ["key", "label", "type", "required"],
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-zA-Z_][a-zA-Z0-9_\\.]*$" },
+        "label": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "email", "password", "text", "date", "select",
+            "checkbox", "address_group", "radio"
+          ]
+        },
+        "required": { "type": "boolean", "default": true },
+        "format": { "type": "string" },
+        "enum": { "type": "array", "items": { "type": "string" } },
+        "ref": { "type": "string", "description": "JSON Pointer to $defs for complex types" },
+        "help_text": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "examples": [
+    {
+      "wizard_version": "1.0.0",
+      "name": "Customer Registration Wizard",
+      "description": "Five-step registration with review and API integration.",
+      "ui": { "base_path": "/register", "allow_section_edit_links": true },
+      "steps": [
+        {
+          "id": "credentials",
+          "title": "Create Account",
+          "kind": "form",
+          "path": "/register/account",
+          "fields": [
+            { "key": "credentials.email", "label": "Email", "type": "email", "required": true, "ref": "#/$defs/email" },
+            { "key": "credentials.password", "label": "Password", "type": "password", "required": true, "ref": "#/$defs/password", "help_text": "12+ characters" }
+          ]
+        },
+        {
+          "id": "person",
+          "title": "Your Details",
+          "kind": "form",
+          "path": "/register/details",
+          "fields": [
+            { "key": "person.first_name", "label": "First name", "type": "text", "required": true, "ref": "#/$defs/name_part" },
+            { "key": "person.last_name", "label": "Last name", "type": "text", "required": true, "ref": "#/$defs/name_part" },
+            { "key": "person.middle_initial", "label": "Middle initial", "type": "text", "required": false, "ref": "#/$defs/middle_initial" },
+            { "key": "person.dob", "label": "Date of birth", "type": "date", "required": true, "ref": "#/$defs/date_yyyy_mm_dd" },
+            { "key": "person.sex", "label": "Sex", "type": "select", "required": true, "ref": "#/$defs/sex" }
+          ]
+        },
+        {
+          "id": "addresses",
+          "title": "Addresses",
+          "kind": "form",
+          "path": "/register/address",
+          "fields": [
+            { "key": "addresses.home", "label": "Home address", "type": "address_group", "required": true, "ref": "#/$defs/address" },
+            { "key": "addresses.mailing_same_as_home", "label": "Mailing address same as home", "type": "checkbox", "required": true },
+            { "key": "addresses.mailing", "label": "Mailing address", "type": "address_group", "required": false, "ref": "#/$defs/address" }
+          ]
+        },
+        {
+          "id": "preferences",
+          "title": "Communication Preferences",
+          "kind": "form",
+          "path": "/register/preferences",
+          "fields": [
+            { "key": "preferences.mail", "label": "Mail delivery", "type": "radio", "required": true, "enum": ["paperless", "postal", "both"] },
+            { "key": "preferences.notifications.email", "label": "Email notifications", "type": "checkbox", "required": true },
+            { "key": "preferences.notifications.sms", "label": "SMS notifications", "type": "checkbox", "required": true },
+            { "key": "preferences.notifications.push", "label": "Push notifications", "type": "checkbox", "required": true },
+            { "key": "preferences.notifications.frequency", "label": "Notification frequency", "type": "select", "required": true, "enum": ["immediate", "daily", "weekly"] }
+          ]
+        },
+        {
+          "id": "review",
+          "title": "Review & Submit",
+          "kind": "review",
+          "path": "/register/review",
+          "fields": []
+        }
+      ],
+      "apis": {
+        "check_unique_email": {
+          "method": "POST",
+          "route": "/api/registration/check-email",
+          "request_schema": { "email": "string" },
+          "response_schema": { "is_unique": "boolean", "message": "string" },
+          "mocks": [
+            {
+              "when": { "equals": { "email": "bobwares@outlook.com" } },
+              "respond": { "status": 409, "body": { "is_unique": false, "message": "Email already registered." } }
+            },
+            {
+              "when": { "equals": { "email": "*" } },
+              "respond": { "status": 200, "body": { "is_unique": true, "message": "OK" } }
+            }
+          ]
+        },
+        "submit_registration": {
+          "method": "POST",
+          "route": "/api/registration/submit",
+          "request_schema": { "$ref": "#/properties/apis/properties/submit_registration/properties/request_schema" },
+          "response_schema": { "registration_id": "string", "status": "accepted|pending_review" },
+          "mocks": [
+            { "respond": { "status": 201, "body": { "registration_id": "REG-123456", "status": "accepted" } } }
+          ]
+        }
+      }
+    }
+  ]
+}

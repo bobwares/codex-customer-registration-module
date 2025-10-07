@@ -20,7 +20,7 @@ Gate: “Spec Pack Review” — Security, Compliance, Analytics, and App Eng si
 # Artifact 1 — RTM (excerpt)
 
 | ID                       | PRD Link | API/Contract                                           | Tests                                                                   | Metrics/Alerts                                                   |
-| ------------------------ | -------- | ------------------------------------------------------ | ----------------------------------------------------------------------- | ---------------------------------------------------------------- |
+|--------------------------|----------|--------------------------------------------------------|-------------------------------------------------------------------------|------------------------------------------------------------------|
 | FR-1 Account creation    | 6.FR-1   | POST /register/start (OpenAPI) + PasswordPolicy schema | Gherkin S1.1, unit: password policy, E2E: happy path                    | Conversion start→complete; 4xx policy errors rate                |
 | FR-2 2FA at registration | 6.FR-2   | POST /otp/send, /otp/verify                            | Gherkin S1.2/S1.3; unit: code verify; resiliency test for provider fail | OTP delivery success ≤60s; verify success; provider health alert |
 | FR-3 PII capture         | 6.FR-3   | PersonalInfo schema; POST /register/complete           | Gherkin S1.4; a11y checks on form fields                                | Field error rates; p95 time-to-complete                          |

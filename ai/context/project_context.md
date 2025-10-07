@@ -8,5 +8,4 @@
 - Short Description:  Register new customers online.
 - Author: Bobwares ([bobwares@outlook.com](mailto:bobwares@outlook.com)) 
 
-- load ./PRD - Registration New Customer Accounts.md
-- load ./Spec Pack.md
+- load ./pattern-contract-schema.json
