@@ -1,0 +1,66 @@
+{
+  "turnId": 2,
+  "timestampUtc": "2025-10-08T00:14:30Z",
+  "actor": {
+    "initiator": "user",
+    "agent": "gpt-5-codex"
+  },
+  "task": {
+    "name": "Tasks 02-05 — Data, Routing, State, Errors",
+    "inputs": [
+      "src/services/registration-service.ts",
+      "src/app/(registration)/register/page.tsx"
+    ],
+    "parameters": {
+      "applicationImplementationPattern": "ui-nextjs"
+    }
+  },
+  "artifacts": {
+    "changelog": "changelog.md",
+    "adr": "adr.md",
+    "diff": "diff.patch",
+    "logs": [],
+    "reports": []
+  },
+  "changes": {
+    "added": [
+      "src/services/registration-service.ts",
+      "src/actions/registration-actions.ts",
+      "src/state/registration-store.ts",
+      "src/components/registration/StepProgress.tsx",
+      "src/components/registration/StartForm.tsx",
+      "src/components/registration/VerifyForm.tsx",
+      "src/components/registration/CompleteForm.tsx",
+      "src/components/registration/__tests__/StepProgress.test.tsx",
+      "src/app/(registration)/register/page.tsx",
+      "src/app/(registration)/register/layout.tsx",
+      "src/app/(registration)/register/loading.tsx",
+      "src/app/(registration)/register/error.tsx",
+      "src/app/(registration)/register/not-found.tsx",
+      "src/app/(registration)/register/verify/page.tsx",
+      "src/app/(registration)/register/complete/page.tsx",
+      "src/app/global-error.tsx",
+      "src/app/api/register/start/route.ts",
+      "src/app/api/register/complete/route.ts",
+      "src/app/api/otp/send/route.ts",
+      "src/app/api/otp/verify/route.ts",
+      "tests/e2e/registration.spec.ts"
+    ],
+    "modified": [],
+    "deleted": []
+  },
+  "metrics": {
+    "filesChanged": 21,
+    "linesAdded": 0,
+    "linesDeleted": 0,
+    "testsPassed": 0,
+    "testsFailed": 0,
+    "coverageDeltaPct": 0
+  },
+  "validation": {
+    "adrPresent": true,
+    "changelogPresent": true,
+    "lintStatus": "not-run",
+    "testsStatus": "not-run"
+  }
+}

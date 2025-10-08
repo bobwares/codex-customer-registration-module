@@ -1,0 +1,70 @@
+{
+  "turnId": 1,
+  "timestampUtc": "2025-10-08T00:05:30Z",
+  "actor": {
+    "initiator": "user",
+    "agent": "gpt-5-codex"
+  },
+  "task": {
+    "name": "TASK 01 — Initialize Project",
+    "inputs": [
+      "ai/context/PRD - Registration New Customer Accounts.md",
+      "ai/context/Spec Pack.md",
+      "ai/pattern-contract-schema.json"
+    ],
+    "parameters": {
+      "applicationImplementationPattern": "ui-nextjs"
+    }
+  },
+  "artifacts": {
+    "changelog": "changelog.md",
+    "adr": "adr.md",
+    "diff": "diff.patch",
+    "logs": [],
+    "reports": []
+  },
+  "changes": {
+    "added": [
+      "package.json",
+      "tsconfig.json",
+      "next.config.ts",
+      "tailwind.config.ts",
+      "postcss.config.js",
+      "vitest.config.ts",
+      "playwright.config.ts",
+      ".eslintrc.json",
+      ".prettierrc",
+      ".gitignore",
+      ".nvmrc",
+      ".npmrc",
+      ".github/workflows/ci.yml",
+      "src/app/globals.css",
+      "src/app/layout.tsx",
+      "src/app/page.tsx",
+      "src/app/error.tsx",
+      "src/app/not-found.tsx",
+      "src/app/loading.tsx",
+      "src/app/api/health/route.ts",
+      "src/lib/env.ts",
+      "env.d.ts",
+      "README.md",
+      ".env.example"
+    ],
+    "modified": [],
+    "deleted": []
+  },
+  "metrics": {
+    "filesChanged": 23,
+    "linesAdded": 0,
+    "linesDeleted": 0,
+    "testsPassed": 0,
+    "testsFailed": 0,
+    "coverageDeltaPct": 0
+  },
+  "validation": {
+    "adrPresent": true,
+    "changelogPresent": true,
+    "lintStatus": "not-run",
+    "testsStatus": "not-run"
+  }
+}
