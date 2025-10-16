@@ -1,0 +1,10 @@
+# App: Customer Registration Module
+# Package: root
+# File: .nvmrc
+# Version: 0.1.0
+# Turns: 1
+# Author: Bobwares (bobwares@outlook.com)
+# Date: 2025-10-07T17:47:06Z
+# Exports: Node.js version pin
+# Description: Specifies the Node.js runtime version for the project.
+20

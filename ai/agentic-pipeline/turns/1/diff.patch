@@ -1,0 +1,1112 @@
+# App: Customer Registration Module
+# Package: ai/agentic-pipeline/turns/1
+# File: diff.patch
+# Version: 0.1.0
+# Turns: 1
+# Author: Bobwares (bobwares@outlook.com)
+# Date: 2025-10-07T17:47:06Z
+# Exports: git diff
+# Description: Captures the staged diff for turn 1.
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000..31050dd
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,10 @@
++# App: Customer Registration Module
++# Package: root
++# File: .env.example
++# Version: 0.1.0
++# Turns: 1
++# Author: Bobwares (bobwares@outlook.com)
++# Date: 2025-10-07T17:47:06Z
++# Exports: API_BASE
++# Description: Sample environment variables for local development defaults.
++API_BASE="http://localhost:3000"
+diff --git a/.eslintrc.js b/.eslintrc.js
+new file mode 100644
+index 0000000..fbc8d51
+--- /dev/null
++++ b/.eslintrc.js
+@@ -0,0 +1,27 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: .eslintrc.js
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: module.exports
++ * Description: ESLint configuration aligned with Next.js and TypeScript strict settings.
++ */
++module.exports = {
++  root: true,
++  extends: ["next", "next/core-web-vitals"],
++  parser: "@typescript-eslint/parser",
++  parserOptions: {
++    project: "./tsconfig.json",
++  },
++  plugins: ["@typescript-eslint"],
++  rules: {
++    "@typescript-eslint/consistent-type-imports": "error",
++    "@typescript-eslint/no-unused-vars": [
++      "error",
++      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
++    ]
++  }
++};
+diff --git a/.gitignore b/.gitignore
+index 92d65b8..8fc0780 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,122 +1,32 @@
+-### IntelliJ IDEA / JetBrains ###
+-.idea/
+-*.iml
+-out/
+-*.ipr
+-*.iws
+-
+-### VS Code ###
+-.vscode/
+-.history/
+-*.code-workspace
+-
+-### General ###
+-.DS_Store
+-Thumbs.db
+-*.log
+-*.tmp
+-*.swp
+-*.swo
+-*.bak
+-*.orig
+-*.rej
+-*.seed
+-*.pid
+-*.seed
+-*.gz
+-*.tgz
+-
+-### Node.js ###
+-node_modules/
++# App: Customer Registration Module
++# Package: root
++# File: .gitignore
++# Version: 0.1.0
++# Turns: 1
++# Author: Bobwares (bobwares@outlook.com)
++# Date: 2025-10-07T17:47:06Z
++# Exports: ignore rules
++# Description: Ignore list for dependencies, build artifacts, and local environment files.
++# Dependencies
++node_modules
++
++# Build outputs
++.next
++out
++
++# Logs
+ npm-debug.log*
+ yarn-debug.log*
+ yarn-error.log*
+-pnpm-debug.log*
+-.pnpm-debug.log*
++
++# Environment files
+ .env
+ .env.local
+ .env.*.local
+-.cache/
+-dist/
+-coverage/
+-.next/
+-.nuxt/
+-out/
+-
+-### Python ###
+-__pycache__/
+-*.py[cod]
+-*.pyo
+-*.pyd
+-*.pyc
+-*.pdb
+-*.egg-info/
+-.eggs/
+-.mypy_cache/
+-.pytest_cache/
+-.tox/
+-.venv/
+-venv/
+-env/
+-ENV/
+-
+-### Java ###
+-target/
+-*.class
+-*.jar
+-*.war
+-*.ear
+-*.class
+-*.log
+-*.hprof
+-*.hs_err_pid*
+-
+-### OS / Editor Artifacts ###
+-*.bak
+-*.tmp
+-*.swp
+-*.swo
+-*~
+-*.lock
+-*.lnk
+ 
+-### Package Managers ###
+-package-lock.json
+-yarn.lock
+-pnpm-lock.yaml
+-poetry.lock
+-Pipfile.lock
++# Playwright
++playwright-report
++blob-report
+ 
+-### Build Systems ###
+-.gradle/
+-build/
+-.mvn/
+-.mvnw
+-.mvnw.cmd
+-
+-### Docker ###
+-*.pid
+-*.seed
+-.docker/
+-docker-compose.override.yml
+-
+-### Misc ###
+-# Logs and Reports
+-logs/
+-*.log
+-*.out
+-*.err
+-
+-# Coverage
+-lcov.info
+-
+-# IDE crash reports
+-hs_err_pid*
+-
+-# Backup files
+-*~
+-
+-# Ignore local testing/experiment files
+-tmp/
+-scratch/
+-sandbox/
++# Misc
++.DS_Store
+diff --git a/.npmrc b/.npmrc
+new file mode 100644
+index 0000000..6e60c79
+--- /dev/null
++++ b/.npmrc
+@@ -0,0 +1,11 @@
++; App: Customer Registration Module
++; Package: root
++; File: .npmrc
++; Version: 0.1.0
++; Turns: 1
++; Author: Bobwares (bobwares@outlook.com)
++; Date: 2025-10-07T17:47:06Z
++; Exports: npm config flags
++; Description: Enforces engine compatibility and exact dependency versions.
++engine-strict=true
++save-exact=true
+diff --git a/.nvmrc b/.nvmrc
+new file mode 100644
+index 0000000..19cd2f4
+--- /dev/null
++++ b/.nvmrc
+@@ -0,0 +1,10 @@
++# App: Customer Registration Module
++# Package: root
++# File: .nvmrc
++# Version: 0.1.0
++# Turns: 1
++# Author: Bobwares (bobwares@outlook.com)
++# Date: 2025-10-07T17:47:06Z
++# Exports: Node.js version pin
++# Description: Specifies the Node.js runtime version for the project.
++20
+diff --git a/AGENTS.md b/AGENTS.md
+new file mode 120000
+index 0000000..2ffdcf5
+--- /dev/null
++++ b/AGENTS.md
+@@ -0,0 +1 @@
++../codex-agentic-ai-pipeline/AGENTS.md
+\ No newline at end of file
+diff --git a/README.md b/README.md
+index 6dbbee4..c981a67 100644
+--- a/README.md
++++ b/README.md
+@@ -1,2 +1,37 @@
+-# agentic-ai-pipeline-target-project-template
+-Template for new projects that will be created by the Agentic AI Pipeline Coding Agent.
++# Customer Registration Module UI
++
++This repository hosts the Next.js App Router implementation for the Customer Registration Module. It provides a secure onboarding landing experience, Tailwind-powered design system scaffolding, and testing/tooling configuration aligned with the agentic AI pipeline governance standards.
++
++## Getting started
++
++```bash
++npm install
++npm run dev
++```
++
++## Available scripts
++
++- `npm run dev` – start the local development server.
++- `npm run build` – create an optimized production build.
++- `npm run start` – run the compiled application.
++- `npm run lint` – execute ESLint using the Next.js configuration.
++- `npm run typecheck` – run TypeScript in no-emit mode.
++- `npm run test` – run Vitest unit tests.
++- `npm run e2e` – run Playwright end-to-end tests (requires local dev server).
++
++## Project structure
++
++- `src/app` – Next.js App Router routes and API handlers.
++- `src/components` – shared presentational components.
++- `src/lib` – utilities and shared configuration.
++- `tests` – unit and end-to-end test suites.
++- `public` – static assets served by Next.js.
++
++## Tooling
++
++- Next.js 15
++- React 19
++- Tailwind CSS 3
++- TypeScript 5.9
++- Vitest + Testing Library
++- Playwright
+diff --git a/ai/agentic-pipeline/turns/1/adr.md b/ai/agentic-pipeline/turns/1/adr.md
+new file mode 100644
+index 0000000..1d43622
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/adr.md
+@@ -0,0 +1,28 @@
++# Architecture Decision Record
++
++Scaffold Next.js App Router baseline with Tailwind and testing stack
++
++**Turn**: 1
++
++**Status**: Accepted
++
++**Date**: 2025-10-07 - 17:47
++
++**Context**
++The project requires a Next.js App Router implementation that aligns with the ui-nextjs application implementation pattern and provides foundations for customer registration flows.
++
++**Options Considered**
++- Use the prescribed Next.js 15 + Tailwind stack from the pattern.
++- Attempt to reuse a legacy Pages Router scaffold.
++- Generate a minimal static site without tooling.
++
++**Decision**
++Adopt the pattern’s recommended Next.js 15 App Router scaffold, including Tailwind CSS, linting, formatting, Vitest, and Playwright tooling. This ensures alignment with governance, supports server components, and prepares the project for future registration features.
++
++**Result**
++Created project scaffolding files (Next.js config, Tailwind setup, linting/prettier configs) and initial landing page with reusable components.
++
++**Consequences**
++- ✅ Provides compliant baseline with testing and styling infrastructure.
++- ✅ Simplifies future feature delivery by using opinionated defaults.
++- ⚠️ Requires Node 20 and associated dependencies for local development.
+diff --git a/ai/agentic-pipeline/turns/1/changelog.md b/ai/agentic-pipeline/turns/1/changelog.md
+new file mode 100644
+index 0000000..9cadcad
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/changelog.md
+@@ -0,0 +1,12 @@
++# Turn: 1 – 2025-10-07T17:47:06Z
++
++## Prompt
++execute turn 1
++
++#### Task
++Execute turn lifecycle per governance to scaffold the Customer Registration Module UI using the Next.js App Router pattern.
++
++#### Changes
++- Generated Next.js 15 App Router scaffold with Tailwind styling and initial landing content.
++- Configured linting, formatting, unit, and e2e testing toolchains per pattern requirements.
++- Established agentic pipeline metadata including changelog, ADR, manifest, and session context capture.
+diff --git a/ai/agentic-pipeline/turns/1/logs/.gitkeep b/ai/agentic-pipeline/turns/1/logs/.gitkeep
+new file mode 100644
+index 0000000..0657b74
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/logs/.gitkeep
+@@ -0,0 +1,9 @@
++# App: Customer Registration Module
++# Package: ai/agentic-pipeline/turns/1/logs
++# File: .gitkeep
++# Version: 0.1.0
++# Turns: 1
++# Author: Bobwares (bobwares@outlook.com)
++# Date: 2025-10-07T17:47:06Z
++# Exports: placeholder
++# Description: Placeholder file ensuring the logs directory is tracked.
+diff --git a/ai/agentic-pipeline/turns/1/manifest.json b/ai/agentic-pipeline/turns/1/manifest.json
+new file mode 100644
+index 0000000..48316b5
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/manifest.json
+@@ -0,0 +1,77 @@
++{
++  "turnId": 1,
++  "timestampUtc": "2025-10-07T17:47:06Z",
++  "actor": {
++    "initiator": "user",
++    "agent": "gpt-5-codex"
++  },
++  "task": {
++    "name": "execute turn 1",
++    "inputs": [
++      "ai/context/project_context.md",
++      "ai/context/PRD - Registration New Customer Accounts.md"
++    ]
++  },
++  "artifacts": {
++    "changelog": "ai/agentic-pipeline/turns/1/changelog.md",
++    "adr": "ai/agentic-pipeline/turns/1/adr.md",
++    "diff": "ai/agentic-pipeline/turns/1/diff.patch",
++    "logs": [],
++    "reports": []
++  },
++  "changes": {
++    "added": [
++      ".env.example",
++      ".eslintrc.js",
++      ".gitignore",
++      ".npmrc",
++      ".nvmrc",
++      "AGENTS.md",
++      "ai/agentic-pipeline/turns/1/adr.md",
++      "ai/agentic-pipeline/turns/1/changelog.md",
++      "ai/agentic-pipeline/turns/1/diff.patch",
++      "ai/agentic-pipeline/turns/1/logs/.gitkeep",
++      "ai/agentic-pipeline/turns/1/manifest.json",
++      "ai/agentic-pipeline/turns/1/reports/.gitkeep",
++      "ai/agentic-pipeline/turns/1/session_context_values.md",
++      "ai/agentic-pipeline/turns/index.csv",
++      "changelog.md",
++      "next-env.d.ts",
++      "next.config.ts",
++      "package.json",
++      "playwright.config.ts",
++      "postcss.config.mjs",
++      "prettier.config.mjs",
++      "public/favicon.svg",
++      "src/app/(public)/page.tsx",
++      "src/app/api/health/route.ts",
++      "src/app/globals.css",
++      "src/app/layout.tsx",
++      "src/app/page.tsx",
++      "src/components/CallToAction.tsx",
++      "src/lib/constants.ts",
++      "tailwind.config.ts",
++      "tests/e2e/landing.spec.ts",
++      "tests/unit/landing-page.test.tsx",
++      "tsconfig.json",
++      "vitest.config.ts",
++      "vitest.setup.ts"
++    ],
++    "modified": [
++      "README.md"
++    ]
++  },
++  "metrics": {
++    "filesChanged": 36,
++    "linesAdded": 1882,
++    "linesDeleted": 116,
++    "testsPassed": 0,
++    "testsFailed": 0
++  },
++  "validation": {
++    "adrPresent": true,
++    "changelogPresent": true,
++    "lintStatus": "not-run",
++    "testsStatus": "not-run"
++  }
++}
+diff --git a/ai/agentic-pipeline/turns/1/reports/.gitkeep b/ai/agentic-pipeline/turns/1/reports/.gitkeep
+new file mode 100644
+index 0000000..d373b55
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/reports/.gitkeep
+@@ -0,0 +1,9 @@
++# App: Customer Registration Module
++# Package: ai/agentic-pipeline/turns/1/reports
++# File: .gitkeep
++# Version: 0.1.0
++# Turns: 1
++# Author: Bobwares (bobwares@outlook.com)
++# Date: 2025-10-07T17:47:06Z
++# Exports: placeholder
++# Description: Placeholder file ensuring the reports directory is tracked.
+diff --git a/ai/agentic-pipeline/turns/1/session_context_values.md b/ai/agentic-pipeline/turns/1/session_context_values.md
+new file mode 100644
+index 0000000..5234dcd
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/session_context_values.md
+@@ -0,0 +1,8 @@
++# Session Context Values – Turn 1
++
++- sandbox_base_directory: workspace
++- target_project: codex-customer-registration-module
++- project_context: ai/context
++- application_implementation_pattern: ui-nextjs
++- turn_task: execute turn 1
++- turn_id: 1
+diff --git a/ai/agentic-pipeline/turns/index.csv b/ai/agentic-pipeline/turns/index.csv
+new file mode 100644
+index 0000000..b6aefc8
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/index.csv
+@@ -0,0 +1,2 @@
++turnId,timestampUtc,task,branch,tag,headAfter,testsPassed,testsFailed,coverageDeltaPct
++1,2025-10-07T17:47:06Z,execute-turn-1,turn/1,turn/1,pending,0,0,0
+diff --git a/changelog.md b/changelog.md
+new file mode 100644
+index 0000000..94eca56
+--- /dev/null
++++ b/changelog.md
+@@ -0,0 +1,5 @@
++# Changelog
++
++## Turn 1 – 2025-10-07
++- Scaffolded Next.js App Router project with Tailwind and initial landing experience.
++- Added testing, linting, and formatting configuration per governance guidelines.
+diff --git a/next-env.d.ts b/next-env.d.ts
+new file mode 100644
+index 0000000..4ab168f
+--- /dev/null
++++ b/next-env.d.ts
+@@ -0,0 +1,16 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: next-env.d.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: none
++ * Description: TypeScript ambient declarations required by Next.js tooling.
++ */
++/// <reference types="next" />
++/// <reference types="next/types/global" />
++/// <reference types="next/image-types/global" />
++
++// NOTE: This file should not be edited
+diff --git a/next.config.ts b/next.config.ts
+new file mode 100644
+index 0000000..20891b5
+--- /dev/null
++++ b/next.config.ts
+@@ -0,0 +1,21 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: next.config.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: nextConfig
++ * Description: Next.js configuration enabling App Router defaults and strict mode.
++ */
++import type { NextConfig } from "next";
++
++const nextConfig: NextConfig = {
++  reactStrictMode: true,
++  experimental: {
++    serverActions: true,
++  },
++};
++
++export default nextConfig;
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..8e17fec
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,50 @@
++{
++  "name": "customer-registration-module",
++  "version": "0.1.0",
++  "private": true,
++  "description": "Customer Registration Module web experience built with Next.js App Router.",
++  "scripts": {
++    "dev": "next dev",
++    "build": "next build",
++    "start": "next start",
++    "lint": "next lint",
++    "typecheck": "tsc --noEmit",
++    "test": "vitest run",
++    "test:watch": "vitest",
++    "e2e": "playwright test",
++    "postinstall": "playwright install --with-deps"
++  },
++  "dependencies": {
++    "@tanstack/react-query": "^5.59.16",
++    "next": "15.0.3",
++    "react": "19.0.0",
++    "react-dom": "19.0.0",
++    "react-hook-form": "^7.53.0",
++    "zod": "^3.23.8",
++    "zustand": "^4.5.5"
++  },
++  "devDependencies": {
++    "@playwright/test": "^1.47.2",
++    "@testing-library/jest-dom": "^6.6.3",
++    "@testing-library/react": "^16.0.1",
++    "@testing-library/user-event": "^14.5.2",
++    "@types/node": "22.7.4",
++    "@types/react": "19.0.2",
++    "@types/react-dom": "19.0.2",
++    "@typescript-eslint/eslint-plugin": "^8.13.0",
++    "@typescript-eslint/parser": "^8.13.0",
++    "autoprefixer": "^10.4.20",
++    "eslint": "^9.13.0",
++    "eslint-config-next": "15.0.3",
++    "jsdom": "^24.1.3",
++    "playwright": "^1.47.2",
++    "postcss": "^8.4.47",
++    "prettier": "^3.3.3",
++    "tailwindcss": "^3.4.14",
++    "typescript": "5.9.2",
++    "vitest": "^2.1.4"
++  },
++  "engines": {
++    "node": "20.x"
++  }
++}
+diff --git a/playwright.config.ts b/playwright.config.ts
+new file mode 100644
+index 0000000..24fe43d
+--- /dev/null
++++ b/playwright.config.ts
+@@ -0,0 +1,26 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: playwright.config.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: default
++ * Description: Playwright configuration describing the base URL and project defaults for e2e tests.
++ */
++import { defineConfig, devices } from "@playwright/test";
++
++export default defineConfig({
++  testDir: "tests/e2e",
++  use: {
++    baseURL: "http://localhost:3000",
++    trace: "on-first-retry",
++  },
++  projects: [
++    {
++      name: "chromium",
++      use: { ...devices["Desktop Chrome"] },
++    },
++  ],
++});
+diff --git a/postcss.config.mjs b/postcss.config.mjs
+new file mode 100644
+index 0000000..b9eb457
+--- /dev/null
++++ b/postcss.config.mjs
+@@ -0,0 +1,19 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: postcss.config.mjs
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: default
++ * Description: PostCSS configuration enabling Tailwind CSS and Autoprefixer processing.
++ */
++const config = {
++  plugins: {
++    tailwindcss: {},
++    autoprefixer: {},
++  },
++};
++
++export default config;
+diff --git a/prettier.config.mjs b/prettier.config.mjs
+new file mode 100644
+index 0000000..d007a60
+--- /dev/null
++++ b/prettier.config.mjs
+@@ -0,0 +1,19 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: prettier.config.mjs
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: default
++ * Description: Prettier configuration ensuring consistent formatting across the project.
++ */
++const config = {
++  singleQuote: false,
++  trailingComma: "es5",
++  printWidth: 90,
++  plugins: []
++};
++
++export default config;
+diff --git a/public/favicon.svg b/public/favicon.svg
+new file mode 100644
+index 0000000..90c95e0
+--- /dev/null
++++ b/public/favicon.svg
+@@ -0,0 +1,11 @@
++<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
++  <defs>
++    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
++      <stop offset="0%" stop-color="#3b82f6" />
++      <stop offset="100%" stop-color="#1d4ed8" />
++    </linearGradient>
++  </defs>
++  <rect width="64" height="64" rx="12" fill="url(#grad)" />
++  <path d="M20 44c0-8.837 7.163-16 16-16" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" />
++  <circle cx="32" cy="20" r="8" fill="#fff" />
++</svg>
+diff --git a/src/app/(public)/page.tsx b/src/app/(public)/page.tsx
+new file mode 100644
+index 0000000..0ceac88
+--- /dev/null
++++ b/src/app/(public)/page.tsx
+@@ -0,0 +1,61 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app/(public)
++ * File: page.tsx
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: RegistrationLandingPage
++ * Description: Landing page introducing the registration experience and guiding users into the flow.
++ */
++import { CallToAction } from "@/components/CallToAction";
++
++export default function RegistrationLandingPage() {
++  return (
++    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-6 py-16">
++      <section className="rounded-3xl bg-white p-10 shadow-sm">
++        <h1 className="text-4xl font-semibold text-primary-700">
++          Create your customer account
++        </h1>
++        <p className="mt-4 text-lg text-slate-600">
++          Start a secure registration journey with multi-factor verification and
++          tailored communication preferences.
++        </p>
++        <div className="mt-8 grid gap-4 md:grid-cols-2">
++          <div className="rounded-2xl border border-slate-200 p-6">
++            <h2 className="text-xl font-semibold text-primary-600">
++              Secure verification
++            </h2>
++            <p className="mt-2 text-slate-600">
++              Email-first one time passcodes with SMS fallback keep your account
++              safe from the beginning.
++            </p>
++          </div>
++          <div className="rounded-2xl border border-slate-200 p-6">
++            <h2 className="text-xl font-semibold text-primary-600">
++              Preference awareness
++            </h2>
++            <p className="mt-2 text-slate-600">
++              Choose communication channels, languages, and marketing consent to
++              personalize your experience.
++            </p>
++          </div>
++        </div>
++      </section>
++      <section className="rounded-3xl border border-dashed border-primary-200 bg-white/40 p-10">
++        <h2 className="text-2xl font-semibold text-primary-700">Next steps</h2>
++        <ol className="mt-4 list-decimal space-y-3 pl-5 text-slate-600">
++          <li>Verify your email address with a secure one-time passcode.</li>
++          <li>Provide essential profile details and localization preferences.</li>
++          <li>Confirm consent so we tailor communication to your needs.</li>
++        </ol>
++      </section>
++      <CallToAction
++        headline="Ready to continue?"
++        body="Launch the guided registration flow to create your account, verify your identity, and set communication preferences in one secure session."
++        primaryLabel="Start registration"
++      />
++    </main>
++  );
++}
+diff --git a/src/app/api/health/route.ts b/src/app/api/health/route.ts
+new file mode 100644
+index 0000000..7f1c2ae
+--- /dev/null
++++ b/src/app/api/health/route.ts
+@@ -0,0 +1,16 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app/api/health
++ * File: route.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: GET
++ * Description: Provides a simple health check endpoint reporting operational status.
++ */
++import { NextResponse } from "next/server";
++
++export function GET() {
++  return NextResponse.json({ status: "ok" }, { status: 200 });
++}
+diff --git a/src/app/globals.css b/src/app/globals.css
+new file mode 100644
+index 0000000..2fe5a44
+--- /dev/null
++++ b/src/app/globals.css
+@@ -0,0 +1,22 @@
++/*
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: globals.css
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: Tailwind layers
++ * Description: Global stylesheet enabling Tailwind layers and base body styling.
++ */
++@tailwind base;
++@tailwind components;
++@tailwind utilities;
++
++:root {
++  color-scheme: light;
++}
++
++body {
++  @apply bg-slate-50 text-slate-900 antialiased;
++}
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+new file mode 100644
+index 0000000..6863e1f
+--- /dev/null
++++ b/src/app/layout.tsx
+@@ -0,0 +1,31 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: layout.tsx
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: metadata, RootLayout
++ * Description: Defines the root HTML structure and metadata for the Customer Registration Module UI.
++ */
++import type { ReactNode } from "react";
++import type { Metadata } from "next";
++import "./globals.css";
++
++export const metadata: Metadata = {
++  title: "Customer Registration",
++  description: "Create a secure customer account in minutes.",
++};
++
++export default function RootLayout({
++  children,
++}: Readonly<{
++  children: ReactNode;
++}>) {
++  return (
++    <html lang="en">
++      <body>{children}</body>
++    </html>
++  );
++}
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+new file mode 100644
+index 0000000..8f7f0b3
+--- /dev/null
++++ b/src/app/page.tsx
+@@ -0,0 +1,12 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: page.tsx
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: default
++ * Description: Root page re-export wiring the public landing route group as the default experience.
++ */
++export { default } from "@/app/(public)/page";
+diff --git a/src/components/CallToAction.tsx b/src/components/CallToAction.tsx
+new file mode 100644
+index 0000000..e13d2d3
+--- /dev/null
++++ b/src/components/CallToAction.tsx
+@@ -0,0 +1,31 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/components
++ * File: CallToAction.tsx
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: CallToAction
++ * Description: Reusable call-to-action section presenting key registration actions.
++ */
++interface CallToActionProps {
++  readonly headline: string;
++  readonly body: string;
++  readonly primaryLabel: string;
++}
++
++export function CallToAction({ headline, body, primaryLabel }: CallToActionProps) {
++  return (
++    <div className="rounded-3xl bg-primary-600 px-8 py-10 text-white shadow-lg">
++      <h2 className="text-3xl font-semibold">{headline}</h2>
++      <p className="mt-4 max-w-2xl text-lg text-primary-100">{body}</p>
++      <button
++        type="button"
++        className="mt-6 inline-flex items-center rounded-full bg-white px-6 py-3 font-semibold text-primary-700 transition hover:bg-primary-50"
++      >
++        {primaryLabel}
++      </button>
++    </div>
++  );
++}
+diff --git a/src/lib/constants.ts b/src/lib/constants.ts
+new file mode 100644
+index 0000000..1b666c0
+--- /dev/null
++++ b/src/lib/constants.ts
+@@ -0,0 +1,13 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/lib
++ * File: constants.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: APP_NAME, SUPPORT_EMAIL
++ * Description: Shared constants describing product-level metadata for the registration experience.
++ */
++export const APP_NAME = "Customer Registration Module";
++export const SUPPORT_EMAIL = "support@example.com";
+diff --git a/tailwind.config.ts b/tailwind.config.ts
+new file mode 100644
+index 0000000..a149a6a
+--- /dev/null
++++ b/tailwind.config.ts
+@@ -0,0 +1,37 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: tailwind.config.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: config
++ * Description: Tailwind CSS configuration targeting the Next.js App Router directories.
++ */
++import type { Config } from "tailwindcss";
++
++const config: Config = {
++  content: ["./src/app/**/*.{ts,tsx}", "./src/components/**/*.{ts,tsx}"],
++  theme: {
++    extend: {
++      colors: {
++        primary: {
++          50: "#eff6ff",
++          100: "#dbeafe",
++          200: "#bfdbfe",
++          300: "#93c5fd",
++          400: "#60a5fa",
++          500: "#3b82f6",
++          600: "#2563eb",
++          700: "#1d4ed8",
++          800: "#1e40af",
++          900: "#1e3a8a",
++        },
++      },
++    },
++  },
++  plugins: [],
++};
++
++export default config;
+diff --git a/tests/e2e/landing.spec.ts b/tests/e2e/landing.spec.ts
+new file mode 100644
+index 0000000..e2cd93c
+--- /dev/null
++++ b/tests/e2e/landing.spec.ts
+@@ -0,0 +1,19 @@
++/**
++ * App: Customer Registration Module
++ * Package: tests/e2e
++ * File: landing.spec.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: none
++ * Description: Basic Playwright smoke test covering the registration landing experience.
++ */
++import { test, expect } from "@playwright/test";
++
++test.describe("Landing page", () => {
++  test("displays registration hero copy", async ({ page }) => {
++    await page.goto("/");
++    await expect(page.getByRole("heading", { name: /create your customer account/i })).toBeVisible();
++  });
++});
+diff --git a/tests/unit/landing-page.test.tsx b/tests/unit/landing-page.test.tsx
+new file mode 100644
+index 0000000..59674be
+--- /dev/null
++++ b/tests/unit/landing-page.test.tsx
+@@ -0,0 +1,22 @@
++/**
++ * App: Customer Registration Module
++ * Package: tests/unit
++ * File: landing-page.test.tsx
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: none
++ * Description: Smoke test validating the registration landing page renders marketing content.
++ */
++import { render, screen } from "@testing-library/react";
++import RegistrationLandingPage from "@/app/(public)/page";
++
++describe("RegistrationLandingPage", () => {
++  it("renders the hero headline", () => {
++    render(<RegistrationLandingPage />);
++    expect(
++      screen.getByRole("heading", { name: /create your customer account/i })
++    ).toBeInTheDocument();
++  });
++});
+diff --git a/tsconfig.json b/tsconfig.json
+new file mode 100644
+index 0000000..19e4ef3
+--- /dev/null
++++ b/tsconfig.json
+@@ -0,0 +1,35 @@
++/*
++ * App: Customer Registration Module
++ * Package: root
++ * File: tsconfig.json
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: none
++ * Description: TypeScript compiler configuration aligned with Next.js 15 and project tooling.
++ */
++{
++  "compilerOptions": {
++    "target": "ES2022",
++    "lib": ["dom", "dom.iterable", "es2022"],
++    "allowJs": false,
++    "skipLibCheck": true,
++    "strict": true,
++    "noImplicitOverride": true,
++    "module": "ESNext",
++    "moduleResolution": "nodenext",
++    "resolveJsonModule": true,
++    "isolatedModules": true,
++    "esModuleInterop": true,
++    "jsx": "preserve",
++    "incremental": true,
++    "types": ["vitest", "vitest/globals", "@testing-library/jest-dom"],
++    "baseUrl": ".",
++    "paths": {
++      "@/*": ["src/*"]
++    }
++  },
++  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
++  "exclude": ["node_modules", "tests/e2e"]
++}
+diff --git a/vitest.config.ts b/vitest.config.ts
+new file mode 100644
+index 0000000..77c17a3
+--- /dev/null
++++ b/vitest.config.ts
+@@ -0,0 +1,27 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: vitest.config.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: default
++ * Description: Vitest configuration for unit and integration tests executed in a jsdom environment.
++ */
++import { fileURLToPath } from "node:url";
++import { defineConfig } from "vitest/config";
++
++export default defineConfig({
++  resolve: {
++    alias: {
++      "@": fileURLToPath(new URL("./src", import.meta.url)),
++    },
++  },
++  test: {
++    environment: "jsdom",
++    globals: true,
++    setupFiles: [fileURLToPath(new URL("./vitest.setup.ts", import.meta.url))],
++    include: ["tests/unit/**/*.test.ts?(x)", "src/**/*.test.ts?(x)"],
++  },
++});
+diff --git a/vitest.setup.ts b/vitest.setup.ts
+new file mode 100644
+index 0000000..d084b9d
+--- /dev/null
++++ b/vitest.setup.ts
+@@ -0,0 +1,12 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: vitest.setup.ts
++ * Version: 0.1.0
++ * Turns: 1
++ * Author: Bobwares (bobwares@outlook.com)
++ * Date: 2025-10-07T17:47:06Z
++ * Exports: none
++ * Description: Test setup script configuring testing library matchers for Vitest.
++ */
++import "@testing-library/jest-dom/vitest";

@@ -1,0 +1,22 @@
+/*
+ * App: Customer Registration Module
+ * Package: src/app
+ * File: globals.css
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: Bobwares (bobwares@outlook.com)
+ * Date: 2025-10-07T17:47:06Z
+ * Exports: Tailwind layers
+ * Description: Global stylesheet enabling Tailwind layers and base body styling.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}

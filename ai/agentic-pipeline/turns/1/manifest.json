@@ -1,0 +1,77 @@
+{
+  "turnId": 1,
+  "timestampUtc": "2025-10-07T17:47:06Z",
+  "actor": {
+    "initiator": "user",
+    "agent": "gpt-5-codex"
+  },
+  "task": {
+    "name": "execute turn 1",
+    "inputs": [
+      "ai/context/project_context.md",
+      "ai/context/PRD - Registration New Customer Accounts.md"
+    ]
+  },
+  "artifacts": {
+    "changelog": "ai/agentic-pipeline/turns/1/changelog.md",
+    "adr": "ai/agentic-pipeline/turns/1/adr.md",
+    "diff": "ai/agentic-pipeline/turns/1/diff.patch",
+    "logs": [],
+    "reports": []
+  },
+  "changes": {
+    "added": [
+      ".env.example",
+      ".eslintrc.js",
+      ".gitignore",
+      ".npmrc",
+      ".nvmrc",
+      "AGENTS.md",
+      "ai/agentic-pipeline/turns/1/adr.md",
+      "ai/agentic-pipeline/turns/1/changelog.md",
+      "ai/agentic-pipeline/turns/1/diff.patch",
+      "ai/agentic-pipeline/turns/1/logs/.gitkeep",
+      "ai/agentic-pipeline/turns/1/manifest.json",
+      "ai/agentic-pipeline/turns/1/reports/.gitkeep",
+      "ai/agentic-pipeline/turns/1/session_context_values.md",
+      "ai/agentic-pipeline/turns/index.csv",
+      "changelog.md",
+      "next-env.d.ts",
+      "next.config.ts",
+      "package.json",
+      "playwright.config.ts",
+      "postcss.config.mjs",
+      "prettier.config.mjs",
+      "public/favicon.svg",
+      "src/app/(public)/page.tsx",
+      "src/app/api/health/route.ts",
+      "src/app/globals.css",
+      "src/app/layout.tsx",
+      "src/app/page.tsx",
+      "src/components/CallToAction.tsx",
+      "src/lib/constants.ts",
+      "tailwind.config.ts",
+      "tests/e2e/landing.spec.ts",
+      "tests/unit/landing-page.test.tsx",
+      "tsconfig.json",
+      "vitest.config.ts",
+      "vitest.setup.ts"
+    ],
+    "modified": [
+      "README.md"
+    ]
+  },
+  "metrics": {
+    "filesChanged": 36,
+    "linesAdded": 1882,
+    "linesDeleted": 116,
+    "testsPassed": 0,
+    "testsFailed": 0
+  },
+  "validation": {
+    "adrPresent": true,
+    "changelogPresent": true,
+    "lintStatus": "not-run",
+    "testsStatus": "not-run"
+  }
+}
