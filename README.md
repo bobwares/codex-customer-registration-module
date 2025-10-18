@@ -37,3 +37,7 @@ Visit [http://localhost:3000](http://localhost:3000) to view the landing page. T
 - Vitest + Testing Library for unit tests
 - Playwright for browser automation
 - GitHub Actions workflow for CI (lint, typecheck, tests, e2e)
+
+## Unity Addressable Asset Loader
+
+The `unity/AddressableAssetLoader.cs` script provides a reusable MonoBehaviour for Unity projects that use the Addressables system. It can optionally preload `AssetReference` entries on startup, exposes async helpers for loading assets or instantiating prefabs, and keeps track of the acquired handles so they can be released later. Each public API accepts an optional `CancellationToken`, making it straightforward to tie addressable operations to gameplay lifetimes or scene transitions. Attach the component to a bootstrap GameObject (such as a systems singleton) and call `Release`, `ReleaseInstance`, or `ReleaseAll` when the assets are no longer needed to prevent memory leaks.
