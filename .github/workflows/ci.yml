@@ -1,0 +1,52 @@
+# /**
+#  * App: Customer Registration Module
+#  * Package: .github/workflows
+#  * File: ci.yml
+#  * Version: 0.1.0
+#  * Turns: 1
+#  * Author: Bobwares (bobwares@outlook.com)
+#  * Date: 2025-10-23T19:46:02Z
+#  * Exports: GitHub Actions workflow
+#  * Description: Automates linting, type checks, unit tests, and E2E smoke
+#  *              tests for pull requests and mainline pushes.
+#  */
+name: CI
+
+on:
+  push:
+    branches: ["main", "work", "turn/*"]
+  pull_request:
+    branches: ["main", "work", "turn/*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:ci
+
+      - name: E2E tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e:ci

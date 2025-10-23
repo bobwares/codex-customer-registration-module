@@ -1,0 +1,33 @@
+/**
+ * App: Customer Registration Module
+ * Package: root
+ * File: tsconfig.json
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: Bobwares (bobwares@outlook.com)
+ * Date: 2025-10-23T19:46:02Z
+ * Exports: none
+ * Description: TypeScript configuration enabling strict type-checking and
+ *              path aliases for the Next.js App Router project.
+ */
+{
+  "extends": "next/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "isolatedModules": true,
+    "moduleResolution": "nodenext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "next.config.ts",
+    "tailwind.config.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules"]
+}

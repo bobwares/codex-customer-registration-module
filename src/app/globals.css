@@ -1,0 +1,40 @@
+/**
+ * App: Customer Registration Module
+ * Package: src/app
+ * File: globals.css
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: Bobwares (bobwares@outlook.com)
+ * Date: 2025-10-23T19:46:02Z
+ * Exports: CSS variables
+ * Description: Global stylesheet registering Tailwind layers and project
+ *              design tokens for the Next.js application.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --accent: #0ea5e9;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: theme("fontFamily.sans");
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
