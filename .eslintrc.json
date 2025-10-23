@@ -1,0 +1,32 @@
+/**
+ * App: Customer Registration Module
+ * Package: config
+ * File: .eslintrc.json
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: Bobwares (bobwares@outlook.com)
+ * Date: 2025-10-23T19:46:02Z
+ * Exports: eslint configuration
+ * Description: ESLint configuration extending Next.js defaults with
+ *              TypeScript-focused rules and testing overrides.
+ */
+{
+  "extends": ["next/core-web-vitals"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}", "tests/**/*.ts"],
+      "plugins": ["testing-library"],
+      "extends": ["plugin:testing-library/react"],
+      "rules": {
+        "testing-library/no-unnecessary-act": "warn"
+      }
+    }
+  ]
+}

@@ -1,3 +1,17 @@
+# /**
+#  * App: Customer Registration Module
+#  * Package: root
+#  * File: .gitignore
+#  * Version: 0.1.0
+#  * Turns: 1
+#  * Author: Bobwares (bobwares@outlook.com)
+#  * Date: 2025-10-23T19:46:02Z
+#  * Exports: ignore patterns
+#  * Description: Defines files and directories excluded from version
+#  *              control for the Next.js project while preserving existing
+#  *              workspace-specific ignores.
+#  */
+
 ### IntelliJ IDEA / JetBrains ###
 .idea/
 *.iml
@@ -22,7 +36,6 @@ Thumbs.db
 *.rej
 *.seed
 *.pid
-*.seed
 *.gz
 *.tgz
 
@@ -36,6 +49,10 @@ pnpm-debug.log*
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+.env.test
+.env.stage
 .cache/
 dist/
 coverage/
@@ -66,16 +83,10 @@ target/
 *.jar
 *.war
 *.ear
-*.class
-*.log
 *.hprof
 *.hs_err_pid*
 
 ### OS / Editor Artifacts ###
-*.bak
-*.tmp
-*.swp
-*.swo
 *~
 *.lock
 *.lnk
@@ -95,28 +106,23 @@ build/
 .mvnw.cmd
 
 ### Docker ###
-*.pid
-*.seed
 .docker/
 docker-compose.override.yml
 
-### Misc ###
-# Logs and Reports
+### Logs and Reports ###
 logs/
-*.log
 *.out
 *.err
+playwright-report/
+test-results/
 
-# Coverage
+### Coverage ###
 lcov.info
 
-# IDE crash reports
-hs_err_pid*
-
-# Backup files
-*~
-
-# Ignore local testing/experiment files
+### Backup files ###
 tmp/
 scratch/
 sandbox/
+
+### Project Specific ###
+.DS_Store

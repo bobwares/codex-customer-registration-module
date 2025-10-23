@@ -1,0 +1,18 @@
+/**
+ * App: Customer Registration Module
+ * Package: config
+ * File: .prettierrc
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: Bobwares (bobwares@outlook.com)
+ * Date: 2025-10-23T19:46:02Z
+ * Exports: prettier configuration
+ * Description: Prettier formatting configuration aligning with the
+ *              repository's code style choices.
+ */
+{
+  "singleQuote": false,
+  "semi": true,
+  "trailingComma": "es5",
+  "printWidth": 100
+}

@@ -1,0 +1,12 @@
+# /**
+#  * App: Customer Registration Module
+#  * Package: root
+#  * File: .nvmrc
+#  * Version: 0.1.0
+#  * Turns: 1
+#  * Author: Bobwares (bobwares@outlook.com)
+#  * Date: 2025-10-23T19:46:02Z
+#  * Exports: node version
+#  * Description: Pins the Node.js runtime version used by the project.
+#  */
+v20.11.1
