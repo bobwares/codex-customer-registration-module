@@ -1,0 +1,41 @@
+# /**
+#  * App: Customer Registration Module
+#  * Package: .github/workflows
+#  * File: ci.yml
+#  * Version: 0.1.0
+#  * Turns: [1]
+#  * Author: gpt-5-codex
+#  * Date: 2025-10-23T20:17:48Z
+#  * Exports: CI workflow
+#  * Description: Automates linting, type-checking, unit tests, and Playwright E2E checks.
+#  */
+name: CI
+
+on:
+  push:
+    branches: ["main", "work"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npm run typecheck
+      - name: Unit tests
+        run: npm run test:ci
+      - name: E2E tests
+        run: npm run e2e:ci
