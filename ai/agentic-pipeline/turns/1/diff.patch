@@ -1,0 +1,4130 @@
+diff --git a/.eslintrc.json b/.eslintrc.json
+new file mode 100644
+index 0000000..8b653cc
+--- /dev/null
++++ b/.eslintrc.json
+@@ -0,0 +1,13 @@
++{
++  "root": true,
++  "extends": ["next/core-web-vitals"],
++  "parser": "@typescript-eslint/parser",
++  "parserOptions": {
++    "project": "./tsconfig.json"
++  },
++  "plugins": ["@typescript-eslint"],
++  "rules": {
++    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
++    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
++  }
++}
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+new file mode 100644
+index 0000000..f0d3180
+--- /dev/null
++++ b/.github/workflows/ci.yml
+@@ -0,0 +1,41 @@
++# /**
++#  * App: Customer Registration Module
++#  * Package: .github/workflows
++#  * File: ci.yml
++#  * Version: 0.1.0
++#  * Turns: [1]
++#  * Author: gpt-5-codex
++#  * Date: 2025-10-23T20:17:48Z
++#  * Exports: CI workflow
++#  * Description: Automates linting, type-checking, unit tests, and Playwright E2E checks.
++#  */
++name: CI
++
++on:
++  push:
++    branches: ["main", "work"]
++  pull_request:
++
++jobs:
++  build:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout repository
++        uses: actions/checkout@v4
++      - name: Use Node.js 20
++        uses: actions/setup-node@v4
++        with:
++          node-version: 20
++          cache: npm
++      - name: Install dependencies
++        run: npm ci
++      - name: Install Playwright browsers
++        run: npx playwright install --with-deps
++      - name: Lint
++        run: npm run lint
++      - name: Type check
++        run: npm run typecheck
++      - name: Unit tests
++        run: npm run test:ci
++      - name: E2E tests
++        run: npm run e2e:ci
+diff --git a/.gitignore b/.gitignore
+index 92d65b8..78b1131 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,122 +1,23 @@
+-### IntelliJ IDEA / JetBrains ###
+-.idea/
+-*.iml
+-out/
+-*.ipr
+-*.iws
++# Node and build output
++node_modules
++.next
++out
++dist
+ 
+-### VS Code ###
+-.vscode/
+-.history/
+-*.code-workspace
+-
+-### General ###
+-.DS_Store
+-Thumbs.db
+-*.log
+-*.tmp
+-*.swp
+-*.swo
+-*.bak
+-*.orig
+-*.rej
+-*.seed
+-*.pid
+-*.seed
+-*.gz
+-*.tgz
+-
+-### Node.js ###
+-node_modules/
++# Logs
+ npm-debug.log*
+ yarn-debug.log*
+ yarn-error.log*
+-pnpm-debug.log*
+ .pnpm-debug.log*
+-.env
+-.env.local
+-.env.*.local
+-.cache/
+-dist/
+-coverage/
+-.next/
+-.nuxt/
+-out/
+-
+-### Python ###
+-__pycache__/
+-*.py[cod]
+-*.pyo
+-*.pyd
+-*.pyc
+-*.pdb
+-*.egg-info/
+-.eggs/
+-.mypy_cache/
+-.pytest_cache/
+-.tox/
+-.venv/
+-venv/
+-env/
+-ENV/
+-
+-### Java ###
+-target/
+-*.class
+-*.jar
+-*.war
+-*.ear
+-*.class
+-*.log
+-*.hprof
+-*.hs_err_pid*
+-
+-### OS / Editor Artifacts ###
+-*.bak
+-*.tmp
+-*.swp
+-*.swo
+-*~
+-*.lock
+-*.lnk
+-
+-### Package Managers ###
+-package-lock.json
+-yarn.lock
+-pnpm-lock.yaml
+-poetry.lock
+-Pipfile.lock
+ 
+-### Build Systems ###
+-.gradle/
+-build/
+-.mvn/
+-.mvnw
+-.mvnw.cmd
++# Testing artifacts
++coverage
++.vitest
++.playwright-report
+ 
+-### Docker ###
+-*.pid
+-*.seed
+-.docker/
+-docker-compose.override.yml
+-
+-### Misc ###
+-# Logs and Reports
+-logs/
+-*.log
+-*.out
+-*.err
+-
+-# Coverage
+-lcov.info
+-
+-# IDE crash reports
+-hs_err_pid*
+-
+-# Backup files
+-*~
+-
+-# Ignore local testing/experiment files
+-tmp/
+-scratch/
+-sandbox/
++# Env files
++.env
++.env.local
++.env.development.local
++.env.test.local
++.env.production.local
+diff --git a/.npmrc b/.npmrc
+new file mode 100644
+index 0000000..15692cb
+--- /dev/null
++++ b/.npmrc
+@@ -0,0 +1,2 @@
++engine-strict=true
++save-exact=false
+diff --git a/.nvmrc b/.nvmrc
+new file mode 100644
+index 0000000..209e3ef
+--- /dev/null
++++ b/.nvmrc
+@@ -0,0 +1 @@
++20
+diff --git a/.prettierrc b/.prettierrc
+new file mode 100644
+index 0000000..6120787
+--- /dev/null
++++ b/.prettierrc
+@@ -0,0 +1,7 @@
++{
++  "semi": true,
++  "singleQuote": false,
++  "tabWidth": 2,
++  "trailingComma": "all",
++  "printWidth": 100
++}
+diff --git a/AGENTS.md b/AGENTS.md
+new file mode 120000
+index 0000000..2ffdcf5
+--- /dev/null
++++ b/AGENTS.md
+@@ -0,0 +1 @@
++../codex-agentic-ai-pipeline/AGENTS.md
+\ No newline at end of file
+diff --git a/ai/agentic-pipeline/turns/1/adr.md b/ai/agentic-pipeline/turns/1/adr.md
+new file mode 100644
+index 0000000..6d6105b
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/adr.md
+@@ -0,0 +1,22 @@
++# ADR: Turn 1 – Initialize Next.js App Scaffold
++
++## Status
++Accepted
++
++## Context
++The Customer Registration Module must adopt the ui-nextjs implementation pattern. No prior
++application files existed in the repository, so a foundational scaffold was required to satisfy
++the pattern’s authoritative file list, enforce governance metadata headers, and enable linting,
++testing, and CI automation.
++
++## Decision
++Generate the minimal Next.js 15 App Router project structure with Tailwind CSS, linting,
++type-checking, Vitest, and Playwright configuration files exactly as prescribed by the pattern.
++All new source and infrastructure files include the mandated metadata header, and the CI
++workflow standardizes quality checks.
++
++## Consequences
++- The repository now contains a runnable Next.js scaffold aligned with the ui-nextjs pattern.
++- Tooling and scripts (lint, typecheck, test, e2e) are ready for future turns to execute.
++- Additional domain features must follow the established structure and update metadata headers
++  with new turn numbers when modified.
+diff --git a/ai/agentic-pipeline/turns/1/changelog.md b/ai/agentic-pipeline/turns/1/changelog.md
+new file mode 100644
+index 0000000..df7f74d
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/changelog.md
+@@ -0,0 +1,65 @@
++# Turn: 1  – 2025-10-23 - 20:17:48 UTC
++
++## Turn Summary
++<!-- CODEx_TURN_SUMMARY:BEGIN -->
++Initialized the Next.js application skeleton for the Customer Registration Module, including
++build tooling, linting, testing pipelines, and CI workflow configuration aligned with the
++ui-nextjs implementation pattern.
++<!-- CODEx_TURN_SUMMARY:END -->
++
++## Input Prompt
++<!-- Summarize the input prompt, schema name that initiated this turn. -->
++Execute turn 1 for the Customer Registration Module project following the agentic pipeline.
++
++## Tasks Executed
++<!-- Add a row per task executed during this turn. -->
++
++| Task Name | Tools / Agents Executed |
++| --------- | ----------------------- |
++| TASK 01 — Initialize Project | bash |
++
++## Turn Files Added
++<!-- List files added under the /ai directory only. One row per file. -->
++
++| Path / File |
++| ----------- |
++| ai/agentic-pipeline/turns/1/changelog.md |
++| ai/agentic-pipeline/turns/1/adr.md |
++| ai/agentic-pipeline/turns/1/manifest.json |
++| ai/agentic-pipeline/turns/1/session_context_values.md |
++| ai/agentic-pipeline/turns_index.csv |
++
++## Files Added
++<!-- Exclude anything under /ai. Include the task that created the file. -->
++
++| Path / File | Task Name |
++| ----------- | --------- |
++| package.json | TASK 01 — Initialize Project |
++| tsconfig.json | TASK 01 — Initialize Project |
++| next.config.ts | TASK 01 — Initialize Project |
++| tailwind.config.ts | TASK 01 — Initialize Project |
++| postcss.config.js | TASK 01 — Initialize Project |
++| src/app/globals.css | TASK 01 — Initialize Project |
++| src/app/layout.tsx | TASK 01 — Initialize Project |
++| src/app/page.tsx | TASK 01 — Initialize Project |
++| src/app/error.tsx | TASK 01 — Initialize Project |
++| src/app/not-found.tsx | TASK 01 — Initialize Project |
++| src/app/loading.tsx | TASK 01 — Initialize Project |
++| src/app/api/health/route.ts | TASK 01 — Initialize Project |
++| src/lib/env.ts | TASK 01 — Initialize Project |
++| vitest.config.ts | TASK 01 — Initialize Project |
++| playwright.config.ts | TASK 01 — Initialize Project |
++| env.d.ts | TASK 01 — Initialize Project |
++| .eslintrc.json | TASK 01 — Initialize Project |
++| .prettierrc | TASK 01 — Initialize Project |
++| .gitignore | TASK 01 — Initialize Project |
++| .nvmrc | TASK 01 — Initialize Project |
++| .npmrc | TASK 01 — Initialize Project |
++| .github/workflows/ci.yml | TASK 01 — Initialize Project |
++
++## Files Updated
++<!-- Exclude anything under /ai. Include the task that updated the file. -->
++
++| Path / File | Task Name |
++| ----------- | --------- |
++| _None_ | _N/A_ |
+diff --git a/ai/agentic-pipeline/turns/1/diff.patch b/ai/agentic-pipeline/turns/1/diff.patch
+new file mode 100644
+index 0000000..b0348b0
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/diff.patch
+@@ -0,0 +1,3096 @@
++diff --git a/.eslintrc.json b/.eslintrc.json
++new file mode 100644
++index 0000000..8b653cc
++--- /dev/null
+++++ b/.eslintrc.json
++@@ -0,0 +1,13 @@
+++{
+++  "root": true,
+++  "extends": ["next/core-web-vitals"],
+++  "parser": "@typescript-eslint/parser",
+++  "parserOptions": {
+++    "project": "./tsconfig.json"
+++  },
+++  "plugins": ["@typescript-eslint"],
+++  "rules": {
+++    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+++    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
+++  }
+++}
++diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
++new file mode 100644
++index 0000000..f0d3180
++--- /dev/null
+++++ b/.github/workflows/ci.yml
++@@ -0,0 +1,41 @@
+++# /**
+++#  * App: Customer Registration Module
+++#  * Package: .github/workflows
+++#  * File: ci.yml
+++#  * Version: 0.1.0
+++#  * Turns: [1]
+++#  * Author: gpt-5-codex
+++#  * Date: 2025-10-23T20:17:48Z
+++#  * Exports: CI workflow
+++#  * Description: Automates linting, type-checking, unit tests, and Playwright E2E checks.
+++#  */
+++name: CI
+++
+++on:
+++  push:
+++    branches: ["main", "work"]
+++  pull_request:
+++
+++jobs:
+++  build:
+++    runs-on: ubuntu-latest
+++    steps:
+++      - name: Checkout repository
+++        uses: actions/checkout@v4
+++      - name: Use Node.js 20
+++        uses: actions/setup-node@v4
+++        with:
+++          node-version: 20
+++          cache: npm
+++      - name: Install dependencies
+++        run: npm ci
+++      - name: Install Playwright browsers
+++        run: npx playwright install --with-deps
+++      - name: Lint
+++        run: npm run lint
+++      - name: Type check
+++        run: npm run typecheck
+++      - name: Unit tests
+++        run: npm run test:ci
+++      - name: E2E tests
+++        run: npm run e2e:ci
++diff --git a/.gitignore b/.gitignore
++index 92d65b8..78b1131 100644
++--- a/.gitignore
+++++ b/.gitignore
++@@ -1,122 +1,23 @@
++-### IntelliJ IDEA / JetBrains ###
++-.idea/
++-*.iml
++-out/
++-*.ipr
++-*.iws
+++# Node and build output
+++node_modules
+++.next
+++out
+++dist
++ 
++-### VS Code ###
++-.vscode/
++-.history/
++-*.code-workspace
++-
++-### General ###
++-.DS_Store
++-Thumbs.db
++-*.log
++-*.tmp
++-*.swp
++-*.swo
++-*.bak
++-*.orig
++-*.rej
++-*.seed
++-*.pid
++-*.seed
++-*.gz
++-*.tgz
++-
++-### Node.js ###
++-node_modules/
+++# Logs
++ npm-debug.log*
++ yarn-debug.log*
++ yarn-error.log*
++-pnpm-debug.log*
++ .pnpm-debug.log*
++-.env
++-.env.local
++-.env.*.local
++-.cache/
++-dist/
++-coverage/
++-.next/
++-.nuxt/
++-out/
++-
++-### Python ###
++-__pycache__/
++-*.py[cod]
++-*.pyo
++-*.pyd
++-*.pyc
++-*.pdb
++-*.egg-info/
++-.eggs/
++-.mypy_cache/
++-.pytest_cache/
++-.tox/
++-.venv/
++-venv/
++-env/
++-ENV/
++-
++-### Java ###
++-target/
++-*.class
++-*.jar
++-*.war
++-*.ear
++-*.class
++-*.log
++-*.hprof
++-*.hs_err_pid*
++-
++-### OS / Editor Artifacts ###
++-*.bak
++-*.tmp
++-*.swp
++-*.swo
++-*~
++-*.lock
++-*.lnk
++-
++-### Package Managers ###
++-package-lock.json
++-yarn.lock
++-pnpm-lock.yaml
++-poetry.lock
++-Pipfile.lock
++ 
++-### Build Systems ###
++-.gradle/
++-build/
++-.mvn/
++-.mvnw
++-.mvnw.cmd
+++# Testing artifacts
+++coverage
+++.vitest
+++.playwright-report
++ 
++-### Docker ###
++-*.pid
++-*.seed
++-.docker/
++-docker-compose.override.yml
++-
++-### Misc ###
++-# Logs and Reports
++-logs/
++-*.log
++-*.out
++-*.err
++-
++-# Coverage
++-lcov.info
++-
++-# IDE crash reports
++-hs_err_pid*
++-
++-# Backup files
++-*~
++-
++-# Ignore local testing/experiment files
++-tmp/
++-scratch/
++-sandbox/
+++# Env files
+++.env
+++.env.local
+++.env.development.local
+++.env.test.local
+++.env.production.local
++diff --git a/.npmrc b/.npmrc
++new file mode 100644
++index 0000000..15692cb
++--- /dev/null
+++++ b/.npmrc
++@@ -0,0 +1,2 @@
+++engine-strict=true
+++save-exact=false
++diff --git a/.nvmrc b/.nvmrc
++new file mode 100644
++index 0000000..209e3ef
++--- /dev/null
+++++ b/.nvmrc
++@@ -0,0 +1 @@
+++20
++diff --git a/.prettierrc b/.prettierrc
++new file mode 100644
++index 0000000..6120787
++--- /dev/null
+++++ b/.prettierrc
++@@ -0,0 +1,7 @@
+++{
+++  "semi": true,
+++  "singleQuote": false,
+++  "tabWidth": 2,
+++  "trailingComma": "all",
+++  "printWidth": 100
+++}
++diff --git a/AGENTS.md b/AGENTS.md
++new file mode 120000
++index 0000000..2ffdcf5
++--- /dev/null
+++++ b/AGENTS.md
++@@ -0,0 +1 @@
+++../codex-agentic-ai-pipeline/AGENTS.md
++\ No newline at end of file
++diff --git a/ai/agentic-pipeline/turns/1/adr.md b/ai/agentic-pipeline/turns/1/adr.md
++new file mode 100644
++index 0000000..6d6105b
++--- /dev/null
+++++ b/ai/agentic-pipeline/turns/1/adr.md
++@@ -0,0 +1,22 @@
+++# ADR: Turn 1 – Initialize Next.js App Scaffold
+++
+++## Status
+++Accepted
+++
+++## Context
+++The Customer Registration Module must adopt the ui-nextjs implementation pattern. No prior
+++application files existed in the repository, so a foundational scaffold was required to satisfy
+++the pattern’s authoritative file list, enforce governance metadata headers, and enable linting,
+++testing, and CI automation.
+++
+++## Decision
+++Generate the minimal Next.js 15 App Router project structure with Tailwind CSS, linting,
+++type-checking, Vitest, and Playwright configuration files exactly as prescribed by the pattern.
+++All new source and infrastructure files include the mandated metadata header, and the CI
+++workflow standardizes quality checks.
+++
+++## Consequences
+++- The repository now contains a runnable Next.js scaffold aligned with the ui-nextjs pattern.
+++- Tooling and scripts (lint, typecheck, test, e2e) are ready for future turns to execute.
+++- Additional domain features must follow the established structure and update metadata headers
+++  with new turn numbers when modified.
++diff --git a/ai/agentic-pipeline/turns/1/changelog.md b/ai/agentic-pipeline/turns/1/changelog.md
++new file mode 100644
++index 0000000..df7f74d
++--- /dev/null
+++++ b/ai/agentic-pipeline/turns/1/changelog.md
++@@ -0,0 +1,65 @@
+++# Turn: 1  – 2025-10-23 - 20:17:48 UTC
+++
+++## Turn Summary
+++<!-- CODEx_TURN_SUMMARY:BEGIN -->
+++Initialized the Next.js application skeleton for the Customer Registration Module, including
+++build tooling, linting, testing pipelines, and CI workflow configuration aligned with the
+++ui-nextjs implementation pattern.
+++<!-- CODEx_TURN_SUMMARY:END -->
+++
+++## Input Prompt
+++<!-- Summarize the input prompt, schema name that initiated this turn. -->
+++Execute turn 1 for the Customer Registration Module project following the agentic pipeline.
+++
+++## Tasks Executed
+++<!-- Add a row per task executed during this turn. -->
+++
+++| Task Name | Tools / Agents Executed |
+++| --------- | ----------------------- |
+++| TASK 01 — Initialize Project | bash |
+++
+++## Turn Files Added
+++<!-- List files added under the /ai directory only. One row per file. -->
+++
+++| Path / File |
+++| ----------- |
+++| ai/agentic-pipeline/turns/1/changelog.md |
+++| ai/agentic-pipeline/turns/1/adr.md |
+++| ai/agentic-pipeline/turns/1/manifest.json |
+++| ai/agentic-pipeline/turns/1/session_context_values.md |
+++| ai/agentic-pipeline/turns_index.csv |
+++
+++## Files Added
+++<!-- Exclude anything under /ai. Include the task that created the file. -->
+++
+++| Path / File | Task Name |
+++| ----------- | --------- |
+++| package.json | TASK 01 — Initialize Project |
+++| tsconfig.json | TASK 01 — Initialize Project |
+++| next.config.ts | TASK 01 — Initialize Project |
+++| tailwind.config.ts | TASK 01 — Initialize Project |
+++| postcss.config.js | TASK 01 — Initialize Project |
+++| src/app/globals.css | TASK 01 — Initialize Project |
+++| src/app/layout.tsx | TASK 01 — Initialize Project |
+++| src/app/page.tsx | TASK 01 — Initialize Project |
+++| src/app/error.tsx | TASK 01 — Initialize Project |
+++| src/app/not-found.tsx | TASK 01 — Initialize Project |
+++| src/app/loading.tsx | TASK 01 — Initialize Project |
+++| src/app/api/health/route.ts | TASK 01 — Initialize Project |
+++| src/lib/env.ts | TASK 01 — Initialize Project |
+++| vitest.config.ts | TASK 01 — Initialize Project |
+++| playwright.config.ts | TASK 01 — Initialize Project |
+++| env.d.ts | TASK 01 — Initialize Project |
+++| .eslintrc.json | TASK 01 — Initialize Project |
+++| .prettierrc | TASK 01 — Initialize Project |
+++| .gitignore | TASK 01 — Initialize Project |
+++| .nvmrc | TASK 01 — Initialize Project |
+++| .npmrc | TASK 01 — Initialize Project |
+++| .github/workflows/ci.yml | TASK 01 — Initialize Project |
+++
+++## Files Updated
+++<!-- Exclude anything under /ai. Include the task that updated the file. -->
+++
+++| Path / File | Task Name |
+++| ----------- | --------- |
+++| _None_ | _N/A_ |
++diff --git a/ai/agentic-pipeline/turns/1/diff.patch b/ai/agentic-pipeline/turns/1/diff.patch
++new file mode 100644
++index 0000000..9c7128e
++--- /dev/null
+++++ b/ai/agentic-pipeline/turns/1/diff.patch
++@@ -0,0 +1,2062 @@
+++diff --git a/.eslintrc.json b/.eslintrc.json
+++new file mode 100644
+++index 0000000..8b653cc
+++--- /dev/null
++++++ b/.eslintrc.json
+++@@ -0,0 +1,13 @@
++++{
++++  "root": true,
++++  "extends": ["next/core-web-vitals"],
++++  "parser": "@typescript-eslint/parser",
++++  "parserOptions": {
++++    "project": "./tsconfig.json"
++++  },
++++  "plugins": ["@typescript-eslint"],
++++  "rules": {
++++    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
++++    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
++++  }
++++}
+++diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+++new file mode 100644
+++index 0000000..f0d3180
+++--- /dev/null
++++++ b/.github/workflows/ci.yml
+++@@ -0,0 +1,41 @@
++++# /**
++++#  * App: Customer Registration Module
++++#  * Package: .github/workflows
++++#  * File: ci.yml
++++#  * Version: 0.1.0
++++#  * Turns: [1]
++++#  * Author: gpt-5-codex
++++#  * Date: 2025-10-23T20:17:48Z
++++#  * Exports: CI workflow
++++#  * Description: Automates linting, type-checking, unit tests, and Playwright E2E checks.
++++#  */
++++name: CI
++++
++++on:
++++  push:
++++    branches: ["main", "work"]
++++  pull_request:
++++
++++jobs:
++++  build:
++++    runs-on: ubuntu-latest
++++    steps:
++++      - name: Checkout repository
++++        uses: actions/checkout@v4
++++      - name: Use Node.js 20
++++        uses: actions/setup-node@v4
++++        with:
++++          node-version: 20
++++          cache: npm
++++      - name: Install dependencies
++++        run: npm ci
++++      - name: Install Playwright browsers
++++        run: npx playwright install --with-deps
++++      - name: Lint
++++        run: npm run lint
++++      - name: Type check
++++        run: npm run typecheck
++++      - name: Unit tests
++++        run: npm run test:ci
++++      - name: E2E tests
++++        run: npm run e2e:ci
+++diff --git a/.gitignore b/.gitignore
+++index 92d65b8..78b1131 100644
+++--- a/.gitignore
++++++ b/.gitignore
+++@@ -1,122 +1,23 @@
+++-### IntelliJ IDEA / JetBrains ###
+++-.idea/
+++-*.iml
+++-out/
+++-*.ipr
+++-*.iws
++++# Node and build output
++++node_modules
++++.next
++++out
++++dist
+++ 
+++-### VS Code ###
+++-.vscode/
+++-.history/
+++-*.code-workspace
+++-
+++-### General ###
+++-.DS_Store
+++-Thumbs.db
+++-*.log
+++-*.tmp
+++-*.swp
+++-*.swo
+++-*.bak
+++-*.orig
+++-*.rej
+++-*.seed
+++-*.pid
+++-*.seed
+++-*.gz
+++-*.tgz
+++-
+++-### Node.js ###
+++-node_modules/
++++# Logs
+++ npm-debug.log*
+++ yarn-debug.log*
+++ yarn-error.log*
+++-pnpm-debug.log*
+++ .pnpm-debug.log*
+++-.env
+++-.env.local
+++-.env.*.local
+++-.cache/
+++-dist/
+++-coverage/
+++-.next/
+++-.nuxt/
+++-out/
+++-
+++-### Python ###
+++-__pycache__/
+++-*.py[cod]
+++-*.pyo
+++-*.pyd
+++-*.pyc
+++-*.pdb
+++-*.egg-info/
+++-.eggs/
+++-.mypy_cache/
+++-.pytest_cache/
+++-.tox/
+++-.venv/
+++-venv/
+++-env/
+++-ENV/
+++-
+++-### Java ###
+++-target/
+++-*.class
+++-*.jar
+++-*.war
+++-*.ear
+++-*.class
+++-*.log
+++-*.hprof
+++-*.hs_err_pid*
+++-
+++-### OS / Editor Artifacts ###
+++-*.bak
+++-*.tmp
+++-*.swp
+++-*.swo
+++-*~
+++-*.lock
+++-*.lnk
+++-
+++-### Package Managers ###
+++-package-lock.json
+++-yarn.lock
+++-pnpm-lock.yaml
+++-poetry.lock
+++-Pipfile.lock
+++ 
+++-### Build Systems ###
+++-.gradle/
+++-build/
+++-.mvn/
+++-.mvnw
+++-.mvnw.cmd
++++# Testing artifacts
++++coverage
++++.vitest
++++.playwright-report
+++ 
+++-### Docker ###
+++-*.pid
+++-*.seed
+++-.docker/
+++-docker-compose.override.yml
+++-
+++-### Misc ###
+++-# Logs and Reports
+++-logs/
+++-*.log
+++-*.out
+++-*.err
+++-
+++-# Coverage
+++-lcov.info
+++-
+++-# IDE crash reports
+++-hs_err_pid*
+++-
+++-# Backup files
+++-*~
+++-
+++-# Ignore local testing/experiment files
+++-tmp/
+++-scratch/
+++-sandbox/
++++# Env files
++++.env
++++.env.local
++++.env.development.local
++++.env.test.local
++++.env.production.local
+++diff --git a/.npmrc b/.npmrc
+++new file mode 100644
+++index 0000000..15692cb
+++--- /dev/null
++++++ b/.npmrc
+++@@ -0,0 +1,2 @@
++++engine-strict=true
++++save-exact=false
+++diff --git a/.nvmrc b/.nvmrc
+++new file mode 100644
+++index 0000000..209e3ef
+++--- /dev/null
++++++ b/.nvmrc
+++@@ -0,0 +1 @@
++++20
+++diff --git a/.prettierrc b/.prettierrc
+++new file mode 100644
+++index 0000000..6120787
+++--- /dev/null
++++++ b/.prettierrc
+++@@ -0,0 +1,7 @@
++++{
++++  "semi": true,
++++  "singleQuote": false,
++++  "tabWidth": 2,
++++  "trailingComma": "all",
++++  "printWidth": 100
++++}
+++diff --git a/AGENTS.md b/AGENTS.md
+++new file mode 120000
+++index 0000000..2ffdcf5
+++--- /dev/null
++++++ b/AGENTS.md
+++@@ -0,0 +1 @@
++++../codex-agentic-ai-pipeline/AGENTS.md
+++\ No newline at end of file
+++diff --git a/ai/agentic-pipeline/turns/1/adr.md b/ai/agentic-pipeline/turns/1/adr.md
+++new file mode 100644
+++index 0000000..6d6105b
+++--- /dev/null
++++++ b/ai/agentic-pipeline/turns/1/adr.md
+++@@ -0,0 +1,22 @@
++++# ADR: Turn 1 – Initialize Next.js App Scaffold
++++
++++## Status
++++Accepted
++++
++++## Context
++++The Customer Registration Module must adopt the ui-nextjs implementation pattern. No prior
++++application files existed in the repository, so a foundational scaffold was required to satisfy
++++the pattern’s authoritative file list, enforce governance metadata headers, and enable linting,
++++testing, and CI automation.
++++
++++## Decision
++++Generate the minimal Next.js 15 App Router project structure with Tailwind CSS, linting,
++++type-checking, Vitest, and Playwright configuration files exactly as prescribed by the pattern.
++++All new source and infrastructure files include the mandated metadata header, and the CI
++++workflow standardizes quality checks.
++++
++++## Consequences
++++- The repository now contains a runnable Next.js scaffold aligned with the ui-nextjs pattern.
++++- Tooling and scripts (lint, typecheck, test, e2e) are ready for future turns to execute.
++++- Additional domain features must follow the established structure and update metadata headers
++++  with new turn numbers when modified.
+++diff --git a/ai/agentic-pipeline/turns/1/changelog.md b/ai/agentic-pipeline/turns/1/changelog.md
+++new file mode 100644
+++index 0000000..df7f74d
+++--- /dev/null
++++++ b/ai/agentic-pipeline/turns/1/changelog.md
+++@@ -0,0 +1,65 @@
++++# Turn: 1  – 2025-10-23 - 20:17:48 UTC
++++
++++## Turn Summary
++++<!-- CODEx_TURN_SUMMARY:BEGIN -->
++++Initialized the Next.js application skeleton for the Customer Registration Module, including
++++build tooling, linting, testing pipelines, and CI workflow configuration aligned with the
++++ui-nextjs implementation pattern.
++++<!-- CODEx_TURN_SUMMARY:END -->
++++
++++## Input Prompt
++++<!-- Summarize the input prompt, schema name that initiated this turn. -->
++++Execute turn 1 for the Customer Registration Module project following the agentic pipeline.
++++
++++## Tasks Executed
++++<!-- Add a row per task executed during this turn. -->
++++
++++| Task Name | Tools / Agents Executed |
++++| --------- | ----------------------- |
++++| TASK 01 — Initialize Project | bash |
++++
++++## Turn Files Added
++++<!-- List files added under the /ai directory only. One row per file. -->
++++
++++| Path / File |
++++| ----------- |
++++| ai/agentic-pipeline/turns/1/changelog.md |
++++| ai/agentic-pipeline/turns/1/adr.md |
++++| ai/agentic-pipeline/turns/1/manifest.json |
++++| ai/agentic-pipeline/turns/1/session_context_values.md |
++++| ai/agentic-pipeline/turns_index.csv |
++++
++++## Files Added
++++<!-- Exclude anything under /ai. Include the task that created the file. -->
++++
++++| Path / File | Task Name |
++++| ----------- | --------- |
++++| package.json | TASK 01 — Initialize Project |
++++| tsconfig.json | TASK 01 — Initialize Project |
++++| next.config.ts | TASK 01 — Initialize Project |
++++| tailwind.config.ts | TASK 01 — Initialize Project |
++++| postcss.config.js | TASK 01 — Initialize Project |
++++| src/app/globals.css | TASK 01 — Initialize Project |
++++| src/app/layout.tsx | TASK 01 — Initialize Project |
++++| src/app/page.tsx | TASK 01 — Initialize Project |
++++| src/app/error.tsx | TASK 01 — Initialize Project |
++++| src/app/not-found.tsx | TASK 01 — Initialize Project |
++++| src/app/loading.tsx | TASK 01 — Initialize Project |
++++| src/app/api/health/route.ts | TASK 01 — Initialize Project |
++++| src/lib/env.ts | TASK 01 — Initialize Project |
++++| vitest.config.ts | TASK 01 — Initialize Project |
++++| playwright.config.ts | TASK 01 — Initialize Project |
++++| env.d.ts | TASK 01 — Initialize Project |
++++| .eslintrc.json | TASK 01 — Initialize Project |
++++| .prettierrc | TASK 01 — Initialize Project |
++++| .gitignore | TASK 01 — Initialize Project |
++++| .nvmrc | TASK 01 — Initialize Project |
++++| .npmrc | TASK 01 — Initialize Project |
++++| .github/workflows/ci.yml | TASK 01 — Initialize Project |
++++
++++## Files Updated
++++<!-- Exclude anything under /ai. Include the task that updated the file. -->
++++
++++| Path / File | Task Name |
++++| ----------- | --------- |
++++| _None_ | _N/A_ |
+++diff --git a/ai/agentic-pipeline/turns/1/diff.patch b/ai/agentic-pipeline/turns/1/diff.patch
+++new file mode 100644
+++index 0000000..0743d4b
+++--- /dev/null
++++++ b/ai/agentic-pipeline/turns/1/diff.patch
+++@@ -0,0 +1,1028 @@
++++diff --git a/.eslintrc.json b/.eslintrc.json
++++new file mode 100644
++++index 0000000..8b653cc
++++--- /dev/null
+++++++ b/.eslintrc.json
++++@@ -0,0 +1,13 @@
+++++{
+++++  "root": true,
+++++  "extends": ["next/core-web-vitals"],
+++++  "parser": "@typescript-eslint/parser",
+++++  "parserOptions": {
+++++    "project": "./tsconfig.json"
+++++  },
+++++  "plugins": ["@typescript-eslint"],
+++++  "rules": {
+++++    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+++++    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
+++++  }
+++++}
++++diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
++++new file mode 100644
++++index 0000000..f0d3180
++++--- /dev/null
+++++++ b/.github/workflows/ci.yml
++++@@ -0,0 +1,41 @@
+++++# /**
+++++#  * App: Customer Registration Module
+++++#  * Package: .github/workflows
+++++#  * File: ci.yml
+++++#  * Version: 0.1.0
+++++#  * Turns: [1]
+++++#  * Author: gpt-5-codex
+++++#  * Date: 2025-10-23T20:17:48Z
+++++#  * Exports: CI workflow
+++++#  * Description: Automates linting, type-checking, unit tests, and Playwright E2E checks.
+++++#  */
+++++name: CI
+++++
+++++on:
+++++  push:
+++++    branches: ["main", "work"]
+++++  pull_request:
+++++
+++++jobs:
+++++  build:
+++++    runs-on: ubuntu-latest
+++++    steps:
+++++      - name: Checkout repository
+++++        uses: actions/checkout@v4
+++++      - name: Use Node.js 20
+++++        uses: actions/setup-node@v4
+++++        with:
+++++          node-version: 20
+++++          cache: npm
+++++      - name: Install dependencies
+++++        run: npm ci
+++++      - name: Install Playwright browsers
+++++        run: npx playwright install --with-deps
+++++      - name: Lint
+++++        run: npm run lint
+++++      - name: Type check
+++++        run: npm run typecheck
+++++      - name: Unit tests
+++++        run: npm run test:ci
+++++      - name: E2E tests
+++++        run: npm run e2e:ci
++++diff --git a/.gitignore b/.gitignore
++++index 92d65b8..78b1131 100644
++++--- a/.gitignore
+++++++ b/.gitignore
++++@@ -1,122 +1,23 @@
++++-### IntelliJ IDEA / JetBrains ###
++++-.idea/
++++-*.iml
++++-out/
++++-*.ipr
++++-*.iws
+++++# Node and build output
+++++node_modules
+++++.next
+++++out
+++++dist
++++ 
++++-### VS Code ###
++++-.vscode/
++++-.history/
++++-*.code-workspace
++++-
++++-### General ###
++++-.DS_Store
++++-Thumbs.db
++++-*.log
++++-*.tmp
++++-*.swp
++++-*.swo
++++-*.bak
++++-*.orig
++++-*.rej
++++-*.seed
++++-*.pid
++++-*.seed
++++-*.gz
++++-*.tgz
++++-
++++-### Node.js ###
++++-node_modules/
+++++# Logs
++++ npm-debug.log*
++++ yarn-debug.log*
++++ yarn-error.log*
++++-pnpm-debug.log*
++++ .pnpm-debug.log*
++++-.env
++++-.env.local
++++-.env.*.local
++++-.cache/
++++-dist/
++++-coverage/
++++-.next/
++++-.nuxt/
++++-out/
++++-
++++-### Python ###
++++-__pycache__/
++++-*.py[cod]
++++-*.pyo
++++-*.pyd
++++-*.pyc
++++-*.pdb
++++-*.egg-info/
++++-.eggs/
++++-.mypy_cache/
++++-.pytest_cache/
++++-.tox/
++++-.venv/
++++-venv/
++++-env/
++++-ENV/
++++-
++++-### Java ###
++++-target/
++++-*.class
++++-*.jar
++++-*.war
++++-*.ear
++++-*.class
++++-*.log
++++-*.hprof
++++-*.hs_err_pid*
++++-
++++-### OS / Editor Artifacts ###
++++-*.bak
++++-*.tmp
++++-*.swp
++++-*.swo
++++-*~
++++-*.lock
++++-*.lnk
++++-
++++-### Package Managers ###
++++-package-lock.json
++++-yarn.lock
++++-pnpm-lock.yaml
++++-poetry.lock
++++-Pipfile.lock
++++ 
++++-### Build Systems ###
++++-.gradle/
++++-build/
++++-.mvn/
++++-.mvnw
++++-.mvnw.cmd
+++++# Testing artifacts
+++++coverage
+++++.vitest
+++++.playwright-report
++++ 
++++-### Docker ###
++++-*.pid
++++-*.seed
++++-.docker/
++++-docker-compose.override.yml
++++-
++++-### Misc ###
++++-# Logs and Reports
++++-logs/
++++-*.log
++++-*.out
++++-*.err
++++-
++++-# Coverage
++++-lcov.info
++++-
++++-# IDE crash reports
++++-hs_err_pid*
++++-
++++-# Backup files
++++-*~
++++-
++++-# Ignore local testing/experiment files
++++-tmp/
++++-scratch/
++++-sandbox/
+++++# Env files
+++++.env
+++++.env.local
+++++.env.development.local
+++++.env.test.local
+++++.env.production.local
++++diff --git a/.npmrc b/.npmrc
++++new file mode 100644
++++index 0000000..15692cb
++++--- /dev/null
+++++++ b/.npmrc
++++@@ -0,0 +1,2 @@
+++++engine-strict=true
+++++save-exact=false
++++diff --git a/.nvmrc b/.nvmrc
++++new file mode 100644
++++index 0000000..209e3ef
++++--- /dev/null
+++++++ b/.nvmrc
++++@@ -0,0 +1 @@
+++++20
++++diff --git a/.prettierrc b/.prettierrc
++++new file mode 100644
++++index 0000000..6120787
++++--- /dev/null
+++++++ b/.prettierrc
++++@@ -0,0 +1,7 @@
+++++{
+++++  "semi": true,
+++++  "singleQuote": false,
+++++  "tabWidth": 2,
+++++  "trailingComma": "all",
+++++  "printWidth": 100
+++++}
++++diff --git a/AGENTS.md b/AGENTS.md
++++new file mode 120000
++++index 0000000..2ffdcf5
++++--- /dev/null
+++++++ b/AGENTS.md
++++@@ -0,0 +1 @@
+++++../codex-agentic-ai-pipeline/AGENTS.md
++++\ No newline at end of file
++++diff --git a/ai/agentic-pipeline/turns/1/adr.md b/ai/agentic-pipeline/turns/1/adr.md
++++new file mode 100644
++++index 0000000..6d6105b
++++--- /dev/null
+++++++ b/ai/agentic-pipeline/turns/1/adr.md
++++@@ -0,0 +1,22 @@
+++++# ADR: Turn 1 – Initialize Next.js App Scaffold
+++++
+++++## Status
+++++Accepted
+++++
+++++## Context
+++++The Customer Registration Module must adopt the ui-nextjs implementation pattern. No prior
+++++application files existed in the repository, so a foundational scaffold was required to satisfy
+++++the pattern’s authoritative file list, enforce governance metadata headers, and enable linting,
+++++testing, and CI automation.
+++++
+++++## Decision
+++++Generate the minimal Next.js 15 App Router project structure with Tailwind CSS, linting,
+++++type-checking, Vitest, and Playwright configuration files exactly as prescribed by the pattern.
+++++All new source and infrastructure files include the mandated metadata header, and the CI
+++++workflow standardizes quality checks.
+++++
+++++## Consequences
+++++- The repository now contains a runnable Next.js scaffold aligned with the ui-nextjs pattern.
+++++- Tooling and scripts (lint, typecheck, test, e2e) are ready for future turns to execute.
+++++- Additional domain features must follow the established structure and update metadata headers
+++++  with new turn numbers when modified.
++++diff --git a/ai/agentic-pipeline/turns/1/changelog.md b/ai/agentic-pipeline/turns/1/changelog.md
++++new file mode 100644
++++index 0000000..df7f74d
++++--- /dev/null
+++++++ b/ai/agentic-pipeline/turns/1/changelog.md
++++@@ -0,0 +1,65 @@
+++++# Turn: 1  – 2025-10-23 - 20:17:48 UTC
+++++
+++++## Turn Summary
+++++<!-- CODEx_TURN_SUMMARY:BEGIN -->
+++++Initialized the Next.js application skeleton for the Customer Registration Module, including
+++++build tooling, linting, testing pipelines, and CI workflow configuration aligned with the
+++++ui-nextjs implementation pattern.
+++++<!-- CODEx_TURN_SUMMARY:END -->
+++++
+++++## Input Prompt
+++++<!-- Summarize the input prompt, schema name that initiated this turn. -->
+++++Execute turn 1 for the Customer Registration Module project following the agentic pipeline.
+++++
+++++## Tasks Executed
+++++<!-- Add a row per task executed during this turn. -->
+++++
+++++| Task Name | Tools / Agents Executed |
+++++| --------- | ----------------------- |
+++++| TASK 01 — Initialize Project | bash |
+++++
+++++## Turn Files Added
+++++<!-- List files added under the /ai directory only. One row per file. -->
+++++
+++++| Path / File |
+++++| ----------- |
+++++| ai/agentic-pipeline/turns/1/changelog.md |
+++++| ai/agentic-pipeline/turns/1/adr.md |
+++++| ai/agentic-pipeline/turns/1/manifest.json |
+++++| ai/agentic-pipeline/turns/1/session_context_values.md |
+++++| ai/agentic-pipeline/turns_index.csv |
+++++
+++++## Files Added
+++++<!-- Exclude anything under /ai. Include the task that created the file. -->
+++++
+++++| Path / File | Task Name |
+++++| ----------- | --------- |
+++++| package.json | TASK 01 — Initialize Project |
+++++| tsconfig.json | TASK 01 — Initialize Project |
+++++| next.config.ts | TASK 01 — Initialize Project |
+++++| tailwind.config.ts | TASK 01 — Initialize Project |
+++++| postcss.config.js | TASK 01 — Initialize Project |
+++++| src/app/globals.css | TASK 01 — Initialize Project |
+++++| src/app/layout.tsx | TASK 01 — Initialize Project |
+++++| src/app/page.tsx | TASK 01 — Initialize Project |
+++++| src/app/error.tsx | TASK 01 — Initialize Project |
+++++| src/app/not-found.tsx | TASK 01 — Initialize Project |
+++++| src/app/loading.tsx | TASK 01 — Initialize Project |
+++++| src/app/api/health/route.ts | TASK 01 — Initialize Project |
+++++| src/lib/env.ts | TASK 01 — Initialize Project |
+++++| vitest.config.ts | TASK 01 — Initialize Project |
+++++| playwright.config.ts | TASK 01 — Initialize Project |
+++++| env.d.ts | TASK 01 — Initialize Project |
+++++| .eslintrc.json | TASK 01 — Initialize Project |
+++++| .prettierrc | TASK 01 — Initialize Project |
+++++| .gitignore | TASK 01 — Initialize Project |
+++++| .nvmrc | TASK 01 — Initialize Project |
+++++| .npmrc | TASK 01 — Initialize Project |
+++++| .github/workflows/ci.yml | TASK 01 — Initialize Project |
+++++
+++++## Files Updated
+++++<!-- Exclude anything under /ai. Include the task that updated the file. -->
+++++
+++++| Path / File | Task Name |
+++++| ----------- | --------- |
+++++| _None_ | _N/A_ |
++++diff --git a/ai/agentic-pipeline/turns/1/manifest.json b/ai/agentic-pipeline/turns/1/manifest.json
++++new file mode 100644
++++index 0000000..918a52e
++++--- /dev/null
+++++++ b/ai/agentic-pipeline/turns/1/manifest.json
++++@@ -0,0 +1,74 @@
+++++{
+++++  "turnId": 1,
+++++  "timestampUtc": "2025-10-23T20:17:48Z",
+++++  "actor": {
+++++    "initiator": "user",
+++++    "agent": "gpt-5-codex"
+++++  },
+++++  "task": {
+++++    "name": "TASK 01 \u2014 Initialize Project",
+++++    "inputs": [
+++++      "ai/context/project_context.md"
+++++    ],
+++++    "parameters": {
+++++      "applicationImplementationPattern": "ui-nextjs"
+++++    }
+++++  },
+++++  "artifacts": {
+++++    "changelog": "changelog.md",
+++++    "adr": "adr.md",
+++++    "diff": "diff.patch",
+++++    "logs": [],
+++++    "reports": []
+++++  },
+++++  "changes": {
+++++    "added": [
+++++      ".eslintrc.json",
+++++      ".github/workflows/ci.yml",
+++++      ".npmrc",
+++++      ".nvmrc",
+++++      ".prettierrc",
+++++      "AGENTS.md",
+++++      "ai/agentic-pipeline/turns/1/adr.md",
+++++      "ai/agentic-pipeline/turns/1/changelog.md",
+++++      "ai/agentic-pipeline/turns/1/diff.patch",
+++++      "ai/agentic-pipeline/turns/1/manifest.json",
+++++      "ai/agentic-pipeline/turns/1/session_context_values.md",
+++++      "ai/agentic-pipeline/turns_index.csv",
+++++      "env.d.ts",
+++++      "next.config.ts",
+++++      "package.json",
+++++      "playwright.config.ts",
+++++      "postcss.config.js",
+++++      "src/app/api/health/route.ts",
+++++      "src/app/error.tsx",
+++++      "src/app/globals.css",
+++++      "src/app/layout.tsx",
+++++      "src/app/loading.tsx",
+++++      "src/app/not-found.tsx",
+++++      "src/app/page.tsx",
+++++      "src/lib/env.ts",
+++++      "tailwind.config.ts",
+++++      "tsconfig.json",
+++++      "vitest.config.ts"
+++++    ],
+++++    "modified": [
+++++      ".gitignore"
+++++    ],
+++++    "deleted": []
+++++  },
+++++  "metrics": {
+++++    "filesChanged": 28,
+++++    "linesAdded": 738,
+++++    "linesDeleted": 115,
+++++    "testsPassed": 0,
+++++    "testsFailed": 0,
+++++    "coverageDeltaPct": 0
+++++  },
+++++  "validation": {
+++++    "adrPresent": true,
+++++    "changelogPresent": true,
+++++    "lintStatus": "not-run",
+++++    "testsStatus": "not-run"
+++++  }
+++++}
++++diff --git a/ai/agentic-pipeline/turns/1/session_context_values.md b/ai/agentic-pipeline/turns/1/session_context_values.md
++++new file mode 100644
++++index 0000000..a7d9436
++++--- /dev/null
+++++++ b/ai/agentic-pipeline/turns/1/session_context_values.md
++++@@ -0,0 +1,8 @@
+++++# Session Context Values
+++++
+++++- turn_id: 1
+++++- project_context: ai/context/project_context.md
+++++- application_implementation_pattern: ui-nextjs
+++++- branch: work
+++++- task_pipeline_step: TASK 01 — Initialize Project
+++++- timestamp_utc: 2025-10-23T20:17:48Z
++++diff --git a/ai/agentic-pipeline/turns_index.csv b/ai/agentic-pipeline/turns_index.csv
++++new file mode 100644
++++index 0000000..ef8369c
++++--- /dev/null
+++++++ b/ai/agentic-pipeline/turns_index.csv
++++@@ -0,0 +1,2 @@
+++++turnId,timestampUtc,task,branch,tag,headAfter,testsPassed,testsFailed,coverageDeltaPct
+++++1,2025-10-23T20:17:48Z,initialize-project,work,turn/1,HEAD,0,0,0
++++diff --git a/env.d.ts b/env.d.ts
++++new file mode 100644
++++index 0000000..643fb0a
++++--- /dev/null
+++++++ b/env.d.ts
++++@@ -0,0 +1,17 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: root
+++++ * File: env.d.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: ProcessEnv
+++++ * Description: Declares environment variable types for the Node.js runtime.
+++++ */
+++++declare namespace NodeJS {
+++++  interface ProcessEnv {
+++++    readonly API_BASE?: string;
+++++    readonly PLAYWRIGHT_BASE_URL?: string;
+++++  }
+++++}
++++diff --git a/next.config.ts b/next.config.ts
++++new file mode 100644
++++index 0000000..05f51ba
++++--- /dev/null
+++++++ b/next.config.ts
++++@@ -0,0 +1,24 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: config
+++++ * File: next.config.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: config
+++++ * Description: Configures Next.js with strict mode, typed routes, and server actions support.
+++++ */
+++++import type { NextConfig } from "next";
+++++
+++++const config: NextConfig = {
+++++  reactStrictMode: true,
+++++  experimental: {
+++++    typedRoutes: true,
+++++    serverActions: {
+++++      bodySizeLimit: "2mb"
+++++    }
+++++  }
+++++};
+++++
+++++export default config;
++++diff --git a/package.json b/package.json
++++new file mode 100644
++++index 0000000..1019e4d
++++--- /dev/null
+++++++ b/package.json
++++@@ -0,0 +1,52 @@
+++++{
+++++  "name": "customer-registration-module",
+++++  "version": "0.1.0",
+++++  "private": true,
+++++  "description": "Register new customers online.",
+++++  "scripts": {
+++++    "dev": "next dev",
+++++    "build": "next build",
+++++    "start": "next start",
+++++    "lint": "next lint",
+++++    "typecheck": "tsc --noEmit",
+++++    "test": "vitest",
+++++    "test:ci": "vitest run --coverage",
+++++    "e2e": "playwright test",
+++++    "e2e:ci": "playwright test --reporter=junit"
+++++  },
+++++  "engines": {
+++++    "node": ">=20.0.0"
+++++  },
+++++  "dependencies": {
+++++    "@tanstack/react-query": "^5.59.7",
+++++    "next": "15.1.0",
+++++    "react": "19.0.0",
+++++    "react-dom": "19.0.0",
+++++    "react-hook-form": "^7.53.1",
+++++    "zustand": "^4.5.5",
+++++    "zod": "^3.23.8"
+++++  },
+++++  "devDependencies": {
+++++    "@playwright/test": "^1.47.2",
+++++    "@testing-library/jest-dom": "^6.4.2",
+++++    "@testing-library/react": "^16.0.0",
+++++    "@testing-library/user-event": "^14.5.2",
+++++    "@types/node": "^20.16.10",
+++++    "@types/react": "^19.0.0",
+++++    "@types/react-dom": "^19.0.0",
+++++    "@typescript-eslint/eslint-plugin": "^8.13.0",
+++++    "@typescript-eslint/parser": "^8.13.0",
+++++    "@vitest/coverage-v8": "^2.1.5",
+++++    "autoprefixer": "^10.4.20",
+++++    "eslint": "^9.11.1",
+++++    "eslint-config-next": "^15.1.0",
+++++    "jsdom": "^24.1.2",
+++++    "playwright": "^1.47.2",
+++++    "postcss": "^8.4.49",
+++++    "prettier": "^3.3.3",
+++++    "tailwindcss": "^3.4.14",
+++++    "typescript": "5.9.2",
+++++    "vitest": "^2.1.5"
+++++  },
+++++  "packageManager": "npm@10.9.0"
+++++}
++++diff --git a/playwright.config.ts b/playwright.config.ts
++++new file mode 100644
++++index 0000000..56eeee9
++++--- /dev/null
+++++++ b/playwright.config.ts
++++@@ -0,0 +1,38 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: config
+++++ * File: playwright.config.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: config
+++++ * Description: Defines Playwright settings for running smoke tests against the Next.js app.
+++++ */
+++++import { defineConfig, devices } from "@playwright/test";
+++++
+++++const config = defineConfig({
+++++  testDir: "./tests/e2e",
+++++  timeout: 30_000,
+++++  use: {
+++++    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
+++++    trace: "on-first-retry",
+++++    video: "retain-on-failure"
+++++  },
+++++  reporter: [["list"], ["html", { outputFolder: "./.playwright-report" }]],
+++++  projects: [
+++++    {
+++++      name: "chromium",
+++++      use: { ...devices["Desktop Chrome"] }
+++++    }
+++++  ],
+++++  webServer: {
+++++    command: "npm run dev",
+++++    port: 3000,
+++++    reuseExistingServer: !process.env.CI,
+++++    stdout: "pipe",
+++++    stderr: "pipe"
+++++  }
+++++});
+++++
+++++export default config;
++++diff --git a/postcss.config.js b/postcss.config.js
++++new file mode 100644
++++index 0000000..87b08f8
++++--- /dev/null
+++++++ b/postcss.config.js
++++@@ -0,0 +1,17 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: config
+++++ * File: postcss.config.js
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: module.exports
+++++ * Description: Configures PostCSS with Tailwind CSS and Autoprefixer plugins.
+++++ */
+++++module.exports = {
+++++  plugins: {
+++++    tailwindcss: {},
+++++    autoprefixer: {}
+++++  }
+++++};
++++diff --git a/src/app/api/health/route.ts b/src/app/api/health/route.ts
++++new file mode 100644
++++index 0000000..a80a3ad
++++--- /dev/null
+++++++ b/src/app/api/health/route.ts
++++@@ -0,0 +1,16 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app/api/health
+++++ * File: route.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: GET
+++++ * Description: Exposes a simple health endpoint that reports API readiness.
+++++ */
+++++import { NextResponse } from "next/server";
+++++
+++++export async function GET() {
+++++  return NextResponse.json({ status: "ok" });
+++++}
++++diff --git a/src/app/error.tsx b/src/app/error.tsx
++++new file mode 100644
++++index 0000000..20f4643
++++--- /dev/null
+++++++ b/src/app/error.tsx
++++@@ -0,0 +1,41 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app
+++++ * File: error.tsx
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: ErrorBoundary
+++++ * Description: Client component that presents a friendly fallback and allows retries when errors occur.
+++++ */
+++++"use client";
+++++
+++++import { useEffect } from "react";
+++++
+++++type ErrorBoundaryProps = {
+++++  readonly error: Error & { digest?: string };
+++++  readonly reset: () => void;
+++++};
+++++
+++++export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
+++++  useEffect(() => {
+++++    console.error(error);
+++++  }, [error]);
+++++
+++++  return (
+++++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-6 px-6">
+++++      <h1 className="text-3xl font-bold text-white">Something went wrong</h1>
+++++      <p className="text-slate-300">
+++++        We were unable to load the registration experience. Please retry your request.
+++++      </p>
+++++      <button
+++++        type="button"
+++++        onClick={reset}
+++++        className="w-fit rounded-full bg-sky-500 px-6 py-2 text-slate-950 font-semibold transition hover:bg-sky-400"
+++++      >
+++++        Try again
+++++      </button>
+++++    </section>
+++++  );
+++++}
++++diff --git a/src/app/globals.css b/src/app/globals.css
++++new file mode 100644
++++index 0000000..07962a9
++++--- /dev/null
+++++++ b/src/app/globals.css
++++@@ -0,0 +1,22 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app
+++++ * File: globals.css
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: n/a
+++++ * Description: Provides global Tailwind layers and foundational styles for the application.
+++++ */
+++++@tailwind base;
+++++@tailwind components;
+++++@tailwind utilities;
+++++
+++++:root {
+++++  color-scheme: light;
+++++}
+++++
+++++body {
+++++  @apply bg-slate-950 text-slate-100 antialiased;
+++++}
++++diff --git a/src/app/layout.tsx b/src/app/layout.tsx
++++new file mode 100644
++++index 0000000..ce9f86f
++++--- /dev/null
+++++++ b/src/app/layout.tsx
++++@@ -0,0 +1,35 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app
+++++ * File: layout.tsx
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: metadata, RootLayout
+++++ * Description: Defines the root layout and metadata for the Customer Registration Module UI.
+++++ */
+++++import type { Metadata } from "next";
+++++import "./globals.css";
+++++import type { ReactNode } from "react";
+++++
+++++export const metadata: Metadata = {
+++++  title: "Customer Registration",
+++++  description: "Register new customers online with confidence."
+++++};
+++++
+++++type RootLayoutProps = {
+++++  readonly children: ReactNode;
+++++};
+++++
+++++export default function RootLayout({ children }: RootLayoutProps) {
+++++  return (
+++++    <html lang="en">
+++++      <body className="min-h-screen bg-slate-950 text-slate-100">
+++++        <main className="min-h-screen">
+++++          {children}
+++++        </main>
+++++      </body>
+++++    </html>
+++++  );
+++++}
++++diff --git a/src/app/loading.tsx b/src/app/loading.tsx
++++new file mode 100644
++++index 0000000..b83540a
++++--- /dev/null
+++++++ b/src/app/loading.tsx
++++@@ -0,0 +1,32 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app
+++++ * File: loading.tsx
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: LoadingIndicator
+++++ * Description: Displays a skeleton loader while server components stream registration data.
+++++ */
+++++export default function LoadingIndicator() {
+++++  return (
+++++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-8 px-6">
+++++      <div className="h-4 w-32 animate-pulse rounded-full bg-slate-700" />
+++++      <div className="space-y-4">
+++++        <div className="h-10 w-3/4 animate-pulse rounded-3xl bg-slate-800" />
+++++        <div className="h-10 w-2/3 animate-pulse rounded-3xl bg-slate-800" />
+++++        <div className="h-10 w-1/2 animate-pulse rounded-3xl bg-slate-800" />
+++++      </div>
+++++      <div className="grid gap-4 sm:grid-cols-3">
+++++        {Array.from({ length: 3 }).map((_, index) => (
+++++          <div key={index} className="space-y-3 rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+++++            <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-700" />
+++++            <div className="h-4 w-full animate-pulse rounded-full bg-slate-800" />
+++++            <div className="h-4 w-5/6 animate-pulse rounded-full bg-slate-800" />
+++++          </div>
+++++        ))}
+++++      </div>
+++++    </section>
+++++  );
+++++}
++++diff --git a/src/app/not-found.tsx b/src/app/not-found.tsx
++++new file mode 100644
++++index 0000000..1f2f973
++++--- /dev/null
+++++++ b/src/app/not-found.tsx
++++@@ -0,0 +1,28 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app
+++++ * File: not-found.tsx
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: NotFoundPage
+++++ * Description: Presents a branded message when a user navigates to a missing route.
+++++ */
+++++export default function NotFoundPage() {
+++++  return (
+++++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-6 text-center">
+++++      <h1 className="text-4xl font-bold text-white">Page not found</h1>
+++++      <p className="text-slate-300">
+++++        The page you are looking for does not exist. Return to the registration dashboard to
+++++        continue onboarding customers.
+++++      </p>
+++++      <a
+++++        href="/"
+++++        className="mx-auto inline-flex items-center justify-center rounded-full border border-slate-700 px-6 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+++++      >
+++++        Go home
+++++      </a>
+++++    </section>
+++++  );
+++++}
++++diff --git a/src/app/page.tsx b/src/app/page.tsx
++++new file mode 100644
++++index 0000000..8da0882
++++--- /dev/null
+++++++ b/src/app/page.tsx
++++@@ -0,0 +1,63 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/app
+++++ * File: page.tsx
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: HomePage
+++++ * Description: Renders the landing page that introduces the customer registration workflow.
+++++ */
+++++export default function HomePage() {
+++++  return (
+++++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
+++++      <header className="space-y-4 text-center">
+++++        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-400">
+++++          Customer Onboarding
+++++        </p>
+++++        <h1 className="text-4xl font-bold text-white sm:text-5xl">
+++++          Register new customers in minutes.
+++++        </h1>
+++++        <p className="text-base text-slate-300 sm:text-lg">
+++++          Streamline account creation, verify identity, and activate services with a
+++++          frictionless experience tailored for modern businesses.
+++++        </p>
+++++      </header>
+++++      <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
+++++        <a
+++++          href="#"
+++++          className="rounded-full bg-sky-500 px-8 py-3 text-base font-semibold text-slate-950 shadow-lg shadow-sky-500/40 transition hover:bg-sky-400"
+++++        >
+++++          Get started
+++++        </a>
+++++        <a
+++++          href="#"
+++++          className="rounded-full border border-slate-700 px-8 py-3 text-base font-semibold text-slate-200 transition hover:border-slate-500"
+++++        >
+++++          View documentation
+++++        </a>
+++++      </div>
+++++      <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-8 sm:grid-cols-3">
+++++        <div>
+++++          <h2 className="text-lg font-semibold text-white">Progress tracking</h2>
+++++          <p className="mt-2 text-sm text-slate-400">
+++++            Monitor every onboarding milestone with real-time status updates and alerts.
+++++          </p>
+++++        </div>
+++++        <div>
+++++          <h2 className="text-lg font-semibold text-white">Secure identity checks</h2>
+++++          <p className="mt-2 text-sm text-slate-400">
+++++            Integrate verification providers and enforce policies without manual steps.
+++++          </p>
+++++        </div>
+++++        <div>
+++++          <h2 className="text-lg font-semibold text-white">Analytics ready</h2>
+++++          <p className="mt-2 text-sm text-slate-400">
+++++            Surface conversion insights and optimize registration flows using built-in metrics.
+++++          </p>
+++++        </div>
+++++      </div>
+++++    </section>
+++++  );
+++++}
++++diff --git a/src/lib/env.ts b/src/lib/env.ts
++++new file mode 100644
++++index 0000000..6981e3c
++++--- /dev/null
+++++++ b/src/lib/env.ts
++++@@ -0,0 +1,25 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: src/lib
+++++ * File: env.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: envSchema, AppEnv, env
+++++ * Description: Validates environment variables shared across client and server contexts.
+++++ */
+++++import { z } from "zod";
+++++
+++++export const envSchema = z.object({
+++++  API_BASE: z
+++++    .string()
+++++    .url()
+++++    .default("http://localhost:3000")
+++++});
+++++
+++++export type AppEnv = z.infer<typeof envSchema>;
+++++
+++++export const env: AppEnv = envSchema.parse({
+++++  API_BASE: process.env.API_BASE
+++++});
++++diff --git a/tailwind.config.ts b/tailwind.config.ts
++++new file mode 100644
++++index 0000000..4e224c4
++++--- /dev/null
+++++++ b/tailwind.config.ts
++++@@ -0,0 +1,22 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: config
+++++ * File: tailwind.config.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: config
+++++ * Description: Tailwind CSS configuration defining content paths and project extensions.
+++++ */
+++++import type { Config } from "tailwindcss";
+++++
+++++const config: Config = {
+++++  content: ["./src/**/*.{ts,tsx}"],
+++++  theme: {
+++++    extend: {}
+++++  },
+++++  plugins: []
+++++};
+++++
+++++export default config;
++++diff --git a/tsconfig.json b/tsconfig.json
++++new file mode 100644
++++index 0000000..8d77b17
++++--- /dev/null
+++++++ b/tsconfig.json
++++@@ -0,0 +1,23 @@
+++++{
+++++  "compilerOptions": {
+++++    "target": "ES2022",
+++++    "lib": ["dom", "dom.iterable", "es2022"],
+++++    "module": "ESNext",
+++++    "moduleResolution": "nodenext",
+++++    "resolveJsonModule": true,
+++++    "allowJs": false,
+++++    "skipLibCheck": true,
+++++    "strict": true,
+++++    "noEmit": true,
+++++    "isolatedModules": true,
+++++    "esModuleInterop": true,
+++++    "forceConsistentCasingInFileNames": true,
+++++    "baseUrl": ".",
+++++    "paths": {
+++++      "@/*": ["src/*"]
+++++    },
+++++    "types": ["@types/node", "@testing-library/jest-dom"]
+++++  },
+++++  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+++++  "exclude": ["node_modules", ".next", "dist"]
+++++}
++++diff --git a/vitest.config.ts b/vitest.config.ts
++++new file mode 100644
++++index 0000000..cd3f63e
++++--- /dev/null
+++++++ b/vitest.config.ts
++++@@ -0,0 +1,31 @@
+++++/**
+++++ * App: Customer Registration Module
+++++ * Package: config
+++++ * File: vitest.config.ts
+++++ * Version: 0.1.0
+++++ * Turns: [1]
+++++ * Author: gpt-5-codex
+++++ * Date: 2025-10-23T20:17:48Z
+++++ * Exports: default
+++++ * Description: Configures Vitest with jsdom environment and path aliases for the Next.js app.
+++++ */
+++++import { dirname, resolve } from "node:path";
+++++import { fileURLToPath } from "node:url";
+++++import { defineConfig } from "vitest/config";
+++++
+++++const currentDirectory = dirname(fileURLToPath(import.meta.url));
+++++
+++++export default defineConfig({
+++++  test: {
+++++    environment: "jsdom",
+++++    globals: true,
+++++    coverage: {
+++++      reporter: ["text", "json", "html"]
+++++    }
+++++  },
+++++  resolve: {
+++++    alias: {
+++++      "@": resolve(currentDirectory, "src")
+++++    }
+++++  }
+++++});
+++diff --git a/ai/agentic-pipeline/turns/1/manifest.json b/ai/agentic-pipeline/turns/1/manifest.json
+++new file mode 100644
+++index 0000000..918a52e
+++--- /dev/null
++++++ b/ai/agentic-pipeline/turns/1/manifest.json
+++@@ -0,0 +1,74 @@
++++{
++++  "turnId": 1,
++++  "timestampUtc": "2025-10-23T20:17:48Z",
++++  "actor": {
++++    "initiator": "user",
++++    "agent": "gpt-5-codex"
++++  },
++++  "task": {
++++    "name": "TASK 01 \u2014 Initialize Project",
++++    "inputs": [
++++      "ai/context/project_context.md"
++++    ],
++++    "parameters": {
++++      "applicationImplementationPattern": "ui-nextjs"
++++    }
++++  },
++++  "artifacts": {
++++    "changelog": "changelog.md",
++++    "adr": "adr.md",
++++    "diff": "diff.patch",
++++    "logs": [],
++++    "reports": []
++++  },
++++  "changes": {
++++    "added": [
++++      ".eslintrc.json",
++++      ".github/workflows/ci.yml",
++++      ".npmrc",
++++      ".nvmrc",
++++      ".prettierrc",
++++      "AGENTS.md",
++++      "ai/agentic-pipeline/turns/1/adr.md",
++++      "ai/agentic-pipeline/turns/1/changelog.md",
++++      "ai/agentic-pipeline/turns/1/diff.patch",
++++      "ai/agentic-pipeline/turns/1/manifest.json",
++++      "ai/agentic-pipeline/turns/1/session_context_values.md",
++++      "ai/agentic-pipeline/turns_index.csv",
++++      "env.d.ts",
++++      "next.config.ts",
++++      "package.json",
++++      "playwright.config.ts",
++++      "postcss.config.js",
++++      "src/app/api/health/route.ts",
++++      "src/app/error.tsx",
++++      "src/app/globals.css",
++++      "src/app/layout.tsx",
++++      "src/app/loading.tsx",
++++      "src/app/not-found.tsx",
++++      "src/app/page.tsx",
++++      "src/lib/env.ts",
++++      "tailwind.config.ts",
++++      "tsconfig.json",
++++      "vitest.config.ts"
++++    ],
++++    "modified": [
++++      ".gitignore"
++++    ],
++++    "deleted": []
++++  },
++++  "metrics": {
++++    "filesChanged": 28,
++++    "linesAdded": 738,
++++    "linesDeleted": 115,
++++    "testsPassed": 0,
++++    "testsFailed": 0,
++++    "coverageDeltaPct": 0
++++  },
++++  "validation": {
++++    "adrPresent": true,
++++    "changelogPresent": true,
++++    "lintStatus": "not-run",
++++    "testsStatus": "not-run"
++++  }
++++}
+++diff --git a/ai/agentic-pipeline/turns/1/session_context_values.md b/ai/agentic-pipeline/turns/1/session_context_values.md
+++new file mode 100644
+++index 0000000..a7d9436
+++--- /dev/null
++++++ b/ai/agentic-pipeline/turns/1/session_context_values.md
+++@@ -0,0 +1,8 @@
++++# Session Context Values
++++
++++- turn_id: 1
++++- project_context: ai/context/project_context.md
++++- application_implementation_pattern: ui-nextjs
++++- branch: work
++++- task_pipeline_step: TASK 01 — Initialize Project
++++- timestamp_utc: 2025-10-23T20:17:48Z
+++diff --git a/ai/agentic-pipeline/turns_index.csv b/ai/agentic-pipeline/turns_index.csv
+++new file mode 100644
+++index 0000000..9f51264
+++--- /dev/null
++++++ b/ai/agentic-pipeline/turns_index.csv
+++@@ -0,0 +1,2 @@
++++turnId,timestampUtc,task,branch,tag,headAfter,testsPassed,testsFailed,coverageDeltaPct
++++1,2025-10-23T20:17:48Z,initialize-project,work,turn/1,02b0e1a,0,0,0
+++diff --git a/env.d.ts b/env.d.ts
+++new file mode 100644
+++index 0000000..643fb0a
+++--- /dev/null
++++++ b/env.d.ts
+++@@ -0,0 +1,17 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: root
++++ * File: env.d.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: ProcessEnv
++++ * Description: Declares environment variable types for the Node.js runtime.
++++ */
++++declare namespace NodeJS {
++++  interface ProcessEnv {
++++    readonly API_BASE?: string;
++++    readonly PLAYWRIGHT_BASE_URL?: string;
++++  }
++++}
+++diff --git a/next.config.ts b/next.config.ts
+++new file mode 100644
+++index 0000000..05f51ba
+++--- /dev/null
++++++ b/next.config.ts
+++@@ -0,0 +1,24 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: config
++++ * File: next.config.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: config
++++ * Description: Configures Next.js with strict mode, typed routes, and server actions support.
++++ */
++++import type { NextConfig } from "next";
++++
++++const config: NextConfig = {
++++  reactStrictMode: true,
++++  experimental: {
++++    typedRoutes: true,
++++    serverActions: {
++++      bodySizeLimit: "2mb"
++++    }
++++  }
++++};
++++
++++export default config;
+++diff --git a/package.json b/package.json
+++new file mode 100644
+++index 0000000..1019e4d
+++--- /dev/null
++++++ b/package.json
+++@@ -0,0 +1,52 @@
++++{
++++  "name": "customer-registration-module",
++++  "version": "0.1.0",
++++  "private": true,
++++  "description": "Register new customers online.",
++++  "scripts": {
++++    "dev": "next dev",
++++    "build": "next build",
++++    "start": "next start",
++++    "lint": "next lint",
++++    "typecheck": "tsc --noEmit",
++++    "test": "vitest",
++++    "test:ci": "vitest run --coverage",
++++    "e2e": "playwright test",
++++    "e2e:ci": "playwright test --reporter=junit"
++++  },
++++  "engines": {
++++    "node": ">=20.0.0"
++++  },
++++  "dependencies": {
++++    "@tanstack/react-query": "^5.59.7",
++++    "next": "15.1.0",
++++    "react": "19.0.0",
++++    "react-dom": "19.0.0",
++++    "react-hook-form": "^7.53.1",
++++    "zustand": "^4.5.5",
++++    "zod": "^3.23.8"
++++  },
++++  "devDependencies": {
++++    "@playwright/test": "^1.47.2",
++++    "@testing-library/jest-dom": "^6.4.2",
++++    "@testing-library/react": "^16.0.0",
++++    "@testing-library/user-event": "^14.5.2",
++++    "@types/node": "^20.16.10",
++++    "@types/react": "^19.0.0",
++++    "@types/react-dom": "^19.0.0",
++++    "@typescript-eslint/eslint-plugin": "^8.13.0",
++++    "@typescript-eslint/parser": "^8.13.0",
++++    "@vitest/coverage-v8": "^2.1.5",
++++    "autoprefixer": "^10.4.20",
++++    "eslint": "^9.11.1",
++++    "eslint-config-next": "^15.1.0",
++++    "jsdom": "^24.1.2",
++++    "playwright": "^1.47.2",
++++    "postcss": "^8.4.49",
++++    "prettier": "^3.3.3",
++++    "tailwindcss": "^3.4.14",
++++    "typescript": "5.9.2",
++++    "vitest": "^2.1.5"
++++  },
++++  "packageManager": "npm@10.9.0"
++++}
+++diff --git a/playwright.config.ts b/playwright.config.ts
+++new file mode 100644
+++index 0000000..56eeee9
+++--- /dev/null
++++++ b/playwright.config.ts
+++@@ -0,0 +1,38 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: config
++++ * File: playwright.config.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: config
++++ * Description: Defines Playwright settings for running smoke tests against the Next.js app.
++++ */
++++import { defineConfig, devices } from "@playwright/test";
++++
++++const config = defineConfig({
++++  testDir: "./tests/e2e",
++++  timeout: 30_000,
++++  use: {
++++    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
++++    trace: "on-first-retry",
++++    video: "retain-on-failure"
++++  },
++++  reporter: [["list"], ["html", { outputFolder: "./.playwright-report" }]],
++++  projects: [
++++    {
++++      name: "chromium",
++++      use: { ...devices["Desktop Chrome"] }
++++    }
++++  ],
++++  webServer: {
++++    command: "npm run dev",
++++    port: 3000,
++++    reuseExistingServer: !process.env.CI,
++++    stdout: "pipe",
++++    stderr: "pipe"
++++  }
++++});
++++
++++export default config;
+++diff --git a/postcss.config.js b/postcss.config.js
+++new file mode 100644
+++index 0000000..87b08f8
+++--- /dev/null
++++++ b/postcss.config.js
+++@@ -0,0 +1,17 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: config
++++ * File: postcss.config.js
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: module.exports
++++ * Description: Configures PostCSS with Tailwind CSS and Autoprefixer plugins.
++++ */
++++module.exports = {
++++  plugins: {
++++    tailwindcss: {},
++++    autoprefixer: {}
++++  }
++++};
+++diff --git a/src/app/api/health/route.ts b/src/app/api/health/route.ts
+++new file mode 100644
+++index 0000000..a80a3ad
+++--- /dev/null
++++++ b/src/app/api/health/route.ts
+++@@ -0,0 +1,16 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app/api/health
++++ * File: route.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: GET
++++ * Description: Exposes a simple health endpoint that reports API readiness.
++++ */
++++import { NextResponse } from "next/server";
++++
++++export async function GET() {
++++  return NextResponse.json({ status: "ok" });
++++}
+++diff --git a/src/app/error.tsx b/src/app/error.tsx
+++new file mode 100644
+++index 0000000..20f4643
+++--- /dev/null
++++++ b/src/app/error.tsx
+++@@ -0,0 +1,41 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app
++++ * File: error.tsx
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: ErrorBoundary
++++ * Description: Client component that presents a friendly fallback and allows retries when errors occur.
++++ */
++++"use client";
++++
++++import { useEffect } from "react";
++++
++++type ErrorBoundaryProps = {
++++  readonly error: Error & { digest?: string };
++++  readonly reset: () => void;
++++};
++++
++++export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
++++  useEffect(() => {
++++    console.error(error);
++++  }, [error]);
++++
++++  return (
++++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-6 px-6">
++++      <h1 className="text-3xl font-bold text-white">Something went wrong</h1>
++++      <p className="text-slate-300">
++++        We were unable to load the registration experience. Please retry your request.
++++      </p>
++++      <button
++++        type="button"
++++        onClick={reset}
++++        className="w-fit rounded-full bg-sky-500 px-6 py-2 text-slate-950 font-semibold transition hover:bg-sky-400"
++++      >
++++        Try again
++++      </button>
++++    </section>
++++  );
++++}
+++diff --git a/src/app/globals.css b/src/app/globals.css
+++new file mode 100644
+++index 0000000..07962a9
+++--- /dev/null
++++++ b/src/app/globals.css
+++@@ -0,0 +1,22 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app
++++ * File: globals.css
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: n/a
++++ * Description: Provides global Tailwind layers and foundational styles for the application.
++++ */
++++@tailwind base;
++++@tailwind components;
++++@tailwind utilities;
++++
++++:root {
++++  color-scheme: light;
++++}
++++
++++body {
++++  @apply bg-slate-950 text-slate-100 antialiased;
++++}
+++diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+++new file mode 100644
+++index 0000000..ce9f86f
+++--- /dev/null
++++++ b/src/app/layout.tsx
+++@@ -0,0 +1,35 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app
++++ * File: layout.tsx
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: metadata, RootLayout
++++ * Description: Defines the root layout and metadata for the Customer Registration Module UI.
++++ */
++++import type { Metadata } from "next";
++++import "./globals.css";
++++import type { ReactNode } from "react";
++++
++++export const metadata: Metadata = {
++++  title: "Customer Registration",
++++  description: "Register new customers online with confidence."
++++};
++++
++++type RootLayoutProps = {
++++  readonly children: ReactNode;
++++};
++++
++++export default function RootLayout({ children }: RootLayoutProps) {
++++  return (
++++    <html lang="en">
++++      <body className="min-h-screen bg-slate-950 text-slate-100">
++++        <main className="min-h-screen">
++++          {children}
++++        </main>
++++      </body>
++++    </html>
++++  );
++++}
+++diff --git a/src/app/loading.tsx b/src/app/loading.tsx
+++new file mode 100644
+++index 0000000..b83540a
+++--- /dev/null
++++++ b/src/app/loading.tsx
+++@@ -0,0 +1,32 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app
++++ * File: loading.tsx
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: LoadingIndicator
++++ * Description: Displays a skeleton loader while server components stream registration data.
++++ */
++++export default function LoadingIndicator() {
++++  return (
++++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-8 px-6">
++++      <div className="h-4 w-32 animate-pulse rounded-full bg-slate-700" />
++++      <div className="space-y-4">
++++        <div className="h-10 w-3/4 animate-pulse rounded-3xl bg-slate-800" />
++++        <div className="h-10 w-2/3 animate-pulse rounded-3xl bg-slate-800" />
++++        <div className="h-10 w-1/2 animate-pulse rounded-3xl bg-slate-800" />
++++      </div>
++++      <div className="grid gap-4 sm:grid-cols-3">
++++        {Array.from({ length: 3 }).map((_, index) => (
++++          <div key={index} className="space-y-3 rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
++++            <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-700" />
++++            <div className="h-4 w-full animate-pulse rounded-full bg-slate-800" />
++++            <div className="h-4 w-5/6 animate-pulse rounded-full bg-slate-800" />
++++          </div>
++++        ))}
++++      </div>
++++    </section>
++++  );
++++}
+++diff --git a/src/app/not-found.tsx b/src/app/not-found.tsx
+++new file mode 100644
+++index 0000000..1f2f973
+++--- /dev/null
++++++ b/src/app/not-found.tsx
+++@@ -0,0 +1,28 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app
++++ * File: not-found.tsx
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: NotFoundPage
++++ * Description: Presents a branded message when a user navigates to a missing route.
++++ */
++++export default function NotFoundPage() {
++++  return (
++++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-6 text-center">
++++      <h1 className="text-4xl font-bold text-white">Page not found</h1>
++++      <p className="text-slate-300">
++++        The page you are looking for does not exist. Return to the registration dashboard to
++++        continue onboarding customers.
++++      </p>
++++      <a
++++        href="/"
++++        className="mx-auto inline-flex items-center justify-center rounded-full border border-slate-700 px-6 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
++++      >
++++        Go home
++++      </a>
++++    </section>
++++  );
++++}
+++diff --git a/src/app/page.tsx b/src/app/page.tsx
+++new file mode 100644
+++index 0000000..8da0882
+++--- /dev/null
++++++ b/src/app/page.tsx
+++@@ -0,0 +1,63 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/app
++++ * File: page.tsx
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: HomePage
++++ * Description: Renders the landing page that introduces the customer registration workflow.
++++ */
++++export default function HomePage() {
++++  return (
++++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
++++      <header className="space-y-4 text-center">
++++        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-400">
++++          Customer Onboarding
++++        </p>
++++        <h1 className="text-4xl font-bold text-white sm:text-5xl">
++++          Register new customers in minutes.
++++        </h1>
++++        <p className="text-base text-slate-300 sm:text-lg">
++++          Streamline account creation, verify identity, and activate services with a
++++          frictionless experience tailored for modern businesses.
++++        </p>
++++      </header>
++++      <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
++++        <a
++++          href="#"
++++          className="rounded-full bg-sky-500 px-8 py-3 text-base font-semibold text-slate-950 shadow-lg shadow-sky-500/40 transition hover:bg-sky-400"
++++        >
++++          Get started
++++        </a>
++++        <a
++++          href="#"
++++          className="rounded-full border border-slate-700 px-8 py-3 text-base font-semibold text-slate-200 transition hover:border-slate-500"
++++        >
++++          View documentation
++++        </a>
++++      </div>
++++      <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-8 sm:grid-cols-3">
++++        <div>
++++          <h2 className="text-lg font-semibold text-white">Progress tracking</h2>
++++          <p className="mt-2 text-sm text-slate-400">
++++            Monitor every onboarding milestone with real-time status updates and alerts.
++++          </p>
++++        </div>
++++        <div>
++++          <h2 className="text-lg font-semibold text-white">Secure identity checks</h2>
++++          <p className="mt-2 text-sm text-slate-400">
++++            Integrate verification providers and enforce policies without manual steps.
++++          </p>
++++        </div>
++++        <div>
++++          <h2 className="text-lg font-semibold text-white">Analytics ready</h2>
++++          <p className="mt-2 text-sm text-slate-400">
++++            Surface conversion insights and optimize registration flows using built-in metrics.
++++          </p>
++++        </div>
++++      </div>
++++    </section>
++++  );
++++}
+++diff --git a/src/lib/env.ts b/src/lib/env.ts
+++new file mode 100644
+++index 0000000..6981e3c
+++--- /dev/null
++++++ b/src/lib/env.ts
+++@@ -0,0 +1,25 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: src/lib
++++ * File: env.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: envSchema, AppEnv, env
++++ * Description: Validates environment variables shared across client and server contexts.
++++ */
++++import { z } from "zod";
++++
++++export const envSchema = z.object({
++++  API_BASE: z
++++    .string()
++++    .url()
++++    .default("http://localhost:3000")
++++});
++++
++++export type AppEnv = z.infer<typeof envSchema>;
++++
++++export const env: AppEnv = envSchema.parse({
++++  API_BASE: process.env.API_BASE
++++});
+++diff --git a/tailwind.config.ts b/tailwind.config.ts
+++new file mode 100644
+++index 0000000..4e224c4
+++--- /dev/null
++++++ b/tailwind.config.ts
+++@@ -0,0 +1,22 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: config
++++ * File: tailwind.config.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: config
++++ * Description: Tailwind CSS configuration defining content paths and project extensions.
++++ */
++++import type { Config } from "tailwindcss";
++++
++++const config: Config = {
++++  content: ["./src/**/*.{ts,tsx}"],
++++  theme: {
++++    extend: {}
++++  },
++++  plugins: []
++++};
++++
++++export default config;
+++diff --git a/tsconfig.json b/tsconfig.json
+++new file mode 100644
+++index 0000000..8d77b17
+++--- /dev/null
++++++ b/tsconfig.json
+++@@ -0,0 +1,23 @@
++++{
++++  "compilerOptions": {
++++    "target": "ES2022",
++++    "lib": ["dom", "dom.iterable", "es2022"],
++++    "module": "ESNext",
++++    "moduleResolution": "nodenext",
++++    "resolveJsonModule": true,
++++    "allowJs": false,
++++    "skipLibCheck": true,
++++    "strict": true,
++++    "noEmit": true,
++++    "isolatedModules": true,
++++    "esModuleInterop": true,
++++    "forceConsistentCasingInFileNames": true,
++++    "baseUrl": ".",
++++    "paths": {
++++      "@/*": ["src/*"]
++++    },
++++    "types": ["@types/node", "@testing-library/jest-dom"]
++++  },
++++  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
++++  "exclude": ["node_modules", ".next", "dist"]
++++}
+++diff --git a/vitest.config.ts b/vitest.config.ts
+++new file mode 100644
+++index 0000000..cd3f63e
+++--- /dev/null
++++++ b/vitest.config.ts
+++@@ -0,0 +1,31 @@
++++/**
++++ * App: Customer Registration Module
++++ * Package: config
++++ * File: vitest.config.ts
++++ * Version: 0.1.0
++++ * Turns: [1]
++++ * Author: gpt-5-codex
++++ * Date: 2025-10-23T20:17:48Z
++++ * Exports: default
++++ * Description: Configures Vitest with jsdom environment and path aliases for the Next.js app.
++++ */
++++import { dirname, resolve } from "node:path";
++++import { fileURLToPath } from "node:url";
++++import { defineConfig } from "vitest/config";
++++
++++const currentDirectory = dirname(fileURLToPath(import.meta.url));
++++
++++export default defineConfig({
++++  test: {
++++    environment: "jsdom",
++++    globals: true,
++++    coverage: {
++++      reporter: ["text", "json", "html"]
++++    }
++++  },
++++  resolve: {
++++    alias: {
++++      "@": resolve(currentDirectory, "src")
++++    }
++++  }
++++});
++diff --git a/ai/agentic-pipeline/turns/1/manifest.json b/ai/agentic-pipeline/turns/1/manifest.json
++new file mode 100644
++index 0000000..f9e54d0
++--- /dev/null
+++++ b/ai/agentic-pipeline/turns/1/manifest.json
++@@ -0,0 +1,74 @@
+++{
+++  "turnId": 1,
+++  "timestampUtc": "2025-10-23T20:17:48Z",
+++  "actor": {
+++    "initiator": "user",
+++    "agent": "gpt-5-codex"
+++  },
+++  "task": {
+++    "name": "TASK 01 \u2014 Initialize Project",
+++    "inputs": [
+++      "ai/context/project_context.md"
+++    ],
+++    "parameters": {
+++      "applicationImplementationPattern": "ui-nextjs"
+++    }
+++  },
+++  "artifacts": {
+++    "changelog": "changelog.md",
+++    "adr": "adr.md",
+++    "diff": "diff.patch",
+++    "logs": [],
+++    "reports": []
+++  },
+++  "changes": {
+++    "added": [
+++      ".eslintrc.json",
+++      ".github/workflows/ci.yml",
+++      ".npmrc",
+++      ".nvmrc",
+++      ".prettierrc",
+++      "AGENTS.md",
+++      "ai/agentic-pipeline/turns/1/adr.md",
+++      "ai/agentic-pipeline/turns/1/changelog.md",
+++      "ai/agentic-pipeline/turns/1/diff.patch",
+++      "ai/agentic-pipeline/turns/1/manifest.json",
+++      "ai/agentic-pipeline/turns/1/session_context_values.md",
+++      "ai/agentic-pipeline/turns_index.csv",
+++      "env.d.ts",
+++      "next.config.ts",
+++      "package.json",
+++      "playwright.config.ts",
+++      "postcss.config.js",
+++      "src/app/api/health/route.ts",
+++      "src/app/error.tsx",
+++      "src/app/globals.css",
+++      "src/app/layout.tsx",
+++      "src/app/loading.tsx",
+++      "src/app/not-found.tsx",
+++      "src/app/page.tsx",
+++      "src/lib/env.ts",
+++      "tailwind.config.ts",
+++      "tsconfig.json",
+++      "vitest.config.ts"
+++    ],
+++    "modified": [
+++      ".gitignore"
+++    ],
+++    "deleted": []
+++  },
+++  "metrics": {
+++    "filesChanged": 29,
+++    "linesAdded": 2800,
+++    "linesDeleted": 115,
+++    "testsPassed": 0,
+++    "testsFailed": 0,
+++    "coverageDeltaPct": 0
+++  },
+++  "validation": {
+++    "adrPresent": true,
+++    "changelogPresent": true,
+++    "lintStatus": "not-run",
+++    "testsStatus": "not-run"
+++  }
+++}
++diff --git a/ai/agentic-pipeline/turns/1/session_context_values.md b/ai/agentic-pipeline/turns/1/session_context_values.md
++new file mode 100644
++index 0000000..a7d9436
++--- /dev/null
+++++ b/ai/agentic-pipeline/turns/1/session_context_values.md
++@@ -0,0 +1,8 @@
+++# Session Context Values
+++
+++- turn_id: 1
+++- project_context: ai/context/project_context.md
+++- application_implementation_pattern: ui-nextjs
+++- branch: work
+++- task_pipeline_step: TASK 01 — Initialize Project
+++- timestamp_utc: 2025-10-23T20:17:48Z
++diff --git a/ai/agentic-pipeline/turns_index.csv b/ai/agentic-pipeline/turns_index.csv
++new file mode 100644
++index 0000000..1ecef60
++--- /dev/null
+++++ b/ai/agentic-pipeline/turns_index.csv
++@@ -0,0 +1,2 @@
+++turnId,timestampUtc,task,branch,tag,headAfter,testsPassed,testsFailed,coverageDeltaPct
+++1,2025-10-23T20:17:48Z,initialize-project,work,turn/1,1e38898,0,0,0
++diff --git a/env.d.ts b/env.d.ts
++new file mode 100644
++index 0000000..643fb0a
++--- /dev/null
+++++ b/env.d.ts
++@@ -0,0 +1,17 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: root
+++ * File: env.d.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: ProcessEnv
+++ * Description: Declares environment variable types for the Node.js runtime.
+++ */
+++declare namespace NodeJS {
+++  interface ProcessEnv {
+++    readonly API_BASE?: string;
+++    readonly PLAYWRIGHT_BASE_URL?: string;
+++  }
+++}
++diff --git a/next.config.ts b/next.config.ts
++new file mode 100644
++index 0000000..05f51ba
++--- /dev/null
+++++ b/next.config.ts
++@@ -0,0 +1,24 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: config
+++ * File: next.config.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: config
+++ * Description: Configures Next.js with strict mode, typed routes, and server actions support.
+++ */
+++import type { NextConfig } from "next";
+++
+++const config: NextConfig = {
+++  reactStrictMode: true,
+++  experimental: {
+++    typedRoutes: true,
+++    serverActions: {
+++      bodySizeLimit: "2mb"
+++    }
+++  }
+++};
+++
+++export default config;
++diff --git a/package.json b/package.json
++new file mode 100644
++index 0000000..1019e4d
++--- /dev/null
+++++ b/package.json
++@@ -0,0 +1,52 @@
+++{
+++  "name": "customer-registration-module",
+++  "version": "0.1.0",
+++  "private": true,
+++  "description": "Register new customers online.",
+++  "scripts": {
+++    "dev": "next dev",
+++    "build": "next build",
+++    "start": "next start",
+++    "lint": "next lint",
+++    "typecheck": "tsc --noEmit",
+++    "test": "vitest",
+++    "test:ci": "vitest run --coverage",
+++    "e2e": "playwright test",
+++    "e2e:ci": "playwright test --reporter=junit"
+++  },
+++  "engines": {
+++    "node": ">=20.0.0"
+++  },
+++  "dependencies": {
+++    "@tanstack/react-query": "^5.59.7",
+++    "next": "15.1.0",
+++    "react": "19.0.0",
+++    "react-dom": "19.0.0",
+++    "react-hook-form": "^7.53.1",
+++    "zustand": "^4.5.5",
+++    "zod": "^3.23.8"
+++  },
+++  "devDependencies": {
+++    "@playwright/test": "^1.47.2",
+++    "@testing-library/jest-dom": "^6.4.2",
+++    "@testing-library/react": "^16.0.0",
+++    "@testing-library/user-event": "^14.5.2",
+++    "@types/node": "^20.16.10",
+++    "@types/react": "^19.0.0",
+++    "@types/react-dom": "^19.0.0",
+++    "@typescript-eslint/eslint-plugin": "^8.13.0",
+++    "@typescript-eslint/parser": "^8.13.0",
+++    "@vitest/coverage-v8": "^2.1.5",
+++    "autoprefixer": "^10.4.20",
+++    "eslint": "^9.11.1",
+++    "eslint-config-next": "^15.1.0",
+++    "jsdom": "^24.1.2",
+++    "playwright": "^1.47.2",
+++    "postcss": "^8.4.49",
+++    "prettier": "^3.3.3",
+++    "tailwindcss": "^3.4.14",
+++    "typescript": "5.9.2",
+++    "vitest": "^2.1.5"
+++  },
+++  "packageManager": "npm@10.9.0"
+++}
++diff --git a/playwright.config.ts b/playwright.config.ts
++new file mode 100644
++index 0000000..56eeee9
++--- /dev/null
+++++ b/playwright.config.ts
++@@ -0,0 +1,38 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: config
+++ * File: playwright.config.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: config
+++ * Description: Defines Playwright settings for running smoke tests against the Next.js app.
+++ */
+++import { defineConfig, devices } from "@playwright/test";
+++
+++const config = defineConfig({
+++  testDir: "./tests/e2e",
+++  timeout: 30_000,
+++  use: {
+++    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
+++    trace: "on-first-retry",
+++    video: "retain-on-failure"
+++  },
+++  reporter: [["list"], ["html", { outputFolder: "./.playwright-report" }]],
+++  projects: [
+++    {
+++      name: "chromium",
+++      use: { ...devices["Desktop Chrome"] }
+++    }
+++  ],
+++  webServer: {
+++    command: "npm run dev",
+++    port: 3000,
+++    reuseExistingServer: !process.env.CI,
+++    stdout: "pipe",
+++    stderr: "pipe"
+++  }
+++});
+++
+++export default config;
++diff --git a/postcss.config.js b/postcss.config.js
++new file mode 100644
++index 0000000..87b08f8
++--- /dev/null
+++++ b/postcss.config.js
++@@ -0,0 +1,17 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: config
+++ * File: postcss.config.js
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: module.exports
+++ * Description: Configures PostCSS with Tailwind CSS and Autoprefixer plugins.
+++ */
+++module.exports = {
+++  plugins: {
+++    tailwindcss: {},
+++    autoprefixer: {}
+++  }
+++};
++diff --git a/src/app/api/health/route.ts b/src/app/api/health/route.ts
++new file mode 100644
++index 0000000..a80a3ad
++--- /dev/null
+++++ b/src/app/api/health/route.ts
++@@ -0,0 +1,16 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app/api/health
+++ * File: route.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: GET
+++ * Description: Exposes a simple health endpoint that reports API readiness.
+++ */
+++import { NextResponse } from "next/server";
+++
+++export async function GET() {
+++  return NextResponse.json({ status: "ok" });
+++}
++diff --git a/src/app/error.tsx b/src/app/error.tsx
++new file mode 100644
++index 0000000..20f4643
++--- /dev/null
+++++ b/src/app/error.tsx
++@@ -0,0 +1,41 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app
+++ * File: error.tsx
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: ErrorBoundary
+++ * Description: Client component that presents a friendly fallback and allows retries when errors occur.
+++ */
+++"use client";
+++
+++import { useEffect } from "react";
+++
+++type ErrorBoundaryProps = {
+++  readonly error: Error & { digest?: string };
+++  readonly reset: () => void;
+++};
+++
+++export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
+++  useEffect(() => {
+++    console.error(error);
+++  }, [error]);
+++
+++  return (
+++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-6 px-6">
+++      <h1 className="text-3xl font-bold text-white">Something went wrong</h1>
+++      <p className="text-slate-300">
+++        We were unable to load the registration experience. Please retry your request.
+++      </p>
+++      <button
+++        type="button"
+++        onClick={reset}
+++        className="w-fit rounded-full bg-sky-500 px-6 py-2 text-slate-950 font-semibold transition hover:bg-sky-400"
+++      >
+++        Try again
+++      </button>
+++    </section>
+++  );
+++}
++diff --git a/src/app/globals.css b/src/app/globals.css
++new file mode 100644
++index 0000000..07962a9
++--- /dev/null
+++++ b/src/app/globals.css
++@@ -0,0 +1,22 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app
+++ * File: globals.css
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: n/a
+++ * Description: Provides global Tailwind layers and foundational styles for the application.
+++ */
+++@tailwind base;
+++@tailwind components;
+++@tailwind utilities;
+++
+++:root {
+++  color-scheme: light;
+++}
+++
+++body {
+++  @apply bg-slate-950 text-slate-100 antialiased;
+++}
++diff --git a/src/app/layout.tsx b/src/app/layout.tsx
++new file mode 100644
++index 0000000..ce9f86f
++--- /dev/null
+++++ b/src/app/layout.tsx
++@@ -0,0 +1,35 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app
+++ * File: layout.tsx
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: metadata, RootLayout
+++ * Description: Defines the root layout and metadata for the Customer Registration Module UI.
+++ */
+++import type { Metadata } from "next";
+++import "./globals.css";
+++import type { ReactNode } from "react";
+++
+++export const metadata: Metadata = {
+++  title: "Customer Registration",
+++  description: "Register new customers online with confidence."
+++};
+++
+++type RootLayoutProps = {
+++  readonly children: ReactNode;
+++};
+++
+++export default function RootLayout({ children }: RootLayoutProps) {
+++  return (
+++    <html lang="en">
+++      <body className="min-h-screen bg-slate-950 text-slate-100">
+++        <main className="min-h-screen">
+++          {children}
+++        </main>
+++      </body>
+++    </html>
+++  );
+++}
++diff --git a/src/app/loading.tsx b/src/app/loading.tsx
++new file mode 100644
++index 0000000..b83540a
++--- /dev/null
+++++ b/src/app/loading.tsx
++@@ -0,0 +1,32 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app
+++ * File: loading.tsx
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: LoadingIndicator
+++ * Description: Displays a skeleton loader while server components stream registration data.
+++ */
+++export default function LoadingIndicator() {
+++  return (
+++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-8 px-6">
+++      <div className="h-4 w-32 animate-pulse rounded-full bg-slate-700" />
+++      <div className="space-y-4">
+++        <div className="h-10 w-3/4 animate-pulse rounded-3xl bg-slate-800" />
+++        <div className="h-10 w-2/3 animate-pulse rounded-3xl bg-slate-800" />
+++        <div className="h-10 w-1/2 animate-pulse rounded-3xl bg-slate-800" />
+++      </div>
+++      <div className="grid gap-4 sm:grid-cols-3">
+++        {Array.from({ length: 3 }).map((_, index) => (
+++          <div key={index} className="space-y-3 rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+++            <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-700" />
+++            <div className="h-4 w-full animate-pulse rounded-full bg-slate-800" />
+++            <div className="h-4 w-5/6 animate-pulse rounded-full bg-slate-800" />
+++          </div>
+++        ))}
+++      </div>
+++    </section>
+++  );
+++}
++diff --git a/src/app/not-found.tsx b/src/app/not-found.tsx
++new file mode 100644
++index 0000000..1f2f973
++--- /dev/null
+++++ b/src/app/not-found.tsx
++@@ -0,0 +1,28 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app
+++ * File: not-found.tsx
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: NotFoundPage
+++ * Description: Presents a branded message when a user navigates to a missing route.
+++ */
+++export default function NotFoundPage() {
+++  return (
+++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-6 text-center">
+++      <h1 className="text-4xl font-bold text-white">Page not found</h1>
+++      <p className="text-slate-300">
+++        The page you are looking for does not exist. Return to the registration dashboard to
+++        continue onboarding customers.
+++      </p>
+++      <a
+++        href="/"
+++        className="mx-auto inline-flex items-center justify-center rounded-full border border-slate-700 px-6 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+++      >
+++        Go home
+++      </a>
+++    </section>
+++  );
+++}
++diff --git a/src/app/page.tsx b/src/app/page.tsx
++new file mode 100644
++index 0000000..8da0882
++--- /dev/null
+++++ b/src/app/page.tsx
++@@ -0,0 +1,63 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/app
+++ * File: page.tsx
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: HomePage
+++ * Description: Renders the landing page that introduces the customer registration workflow.
+++ */
+++export default function HomePage() {
+++  return (
+++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
+++      <header className="space-y-4 text-center">
+++        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-400">
+++          Customer Onboarding
+++        </p>
+++        <h1 className="text-4xl font-bold text-white sm:text-5xl">
+++          Register new customers in minutes.
+++        </h1>
+++        <p className="text-base text-slate-300 sm:text-lg">
+++          Streamline account creation, verify identity, and activate services with a
+++          frictionless experience tailored for modern businesses.
+++        </p>
+++      </header>
+++      <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
+++        <a
+++          href="#"
+++          className="rounded-full bg-sky-500 px-8 py-3 text-base font-semibold text-slate-950 shadow-lg shadow-sky-500/40 transition hover:bg-sky-400"
+++        >
+++          Get started
+++        </a>
+++        <a
+++          href="#"
+++          className="rounded-full border border-slate-700 px-8 py-3 text-base font-semibold text-slate-200 transition hover:border-slate-500"
+++        >
+++          View documentation
+++        </a>
+++      </div>
+++      <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-8 sm:grid-cols-3">
+++        <div>
+++          <h2 className="text-lg font-semibold text-white">Progress tracking</h2>
+++          <p className="mt-2 text-sm text-slate-400">
+++            Monitor every onboarding milestone with real-time status updates and alerts.
+++          </p>
+++        </div>
+++        <div>
+++          <h2 className="text-lg font-semibold text-white">Secure identity checks</h2>
+++          <p className="mt-2 text-sm text-slate-400">
+++            Integrate verification providers and enforce policies without manual steps.
+++          </p>
+++        </div>
+++        <div>
+++          <h2 className="text-lg font-semibold text-white">Analytics ready</h2>
+++          <p className="mt-2 text-sm text-slate-400">
+++            Surface conversion insights and optimize registration flows using built-in metrics.
+++          </p>
+++        </div>
+++      </div>
+++    </section>
+++  );
+++}
++diff --git a/src/lib/env.ts b/src/lib/env.ts
++new file mode 100644
++index 0000000..6981e3c
++--- /dev/null
+++++ b/src/lib/env.ts
++@@ -0,0 +1,25 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: src/lib
+++ * File: env.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: envSchema, AppEnv, env
+++ * Description: Validates environment variables shared across client and server contexts.
+++ */
+++import { z } from "zod";
+++
+++export const envSchema = z.object({
+++  API_BASE: z
+++    .string()
+++    .url()
+++    .default("http://localhost:3000")
+++});
+++
+++export type AppEnv = z.infer<typeof envSchema>;
+++
+++export const env: AppEnv = envSchema.parse({
+++  API_BASE: process.env.API_BASE
+++});
++diff --git a/tailwind.config.ts b/tailwind.config.ts
++new file mode 100644
++index 0000000..4e224c4
++--- /dev/null
+++++ b/tailwind.config.ts
++@@ -0,0 +1,22 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: config
+++ * File: tailwind.config.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: config
+++ * Description: Tailwind CSS configuration defining content paths and project extensions.
+++ */
+++import type { Config } from "tailwindcss";
+++
+++const config: Config = {
+++  content: ["./src/**/*.{ts,tsx}"],
+++  theme: {
+++    extend: {}
+++  },
+++  plugins: []
+++};
+++
+++export default config;
++diff --git a/tsconfig.json b/tsconfig.json
++new file mode 100644
++index 0000000..8d77b17
++--- /dev/null
+++++ b/tsconfig.json
++@@ -0,0 +1,23 @@
+++{
+++  "compilerOptions": {
+++    "target": "ES2022",
+++    "lib": ["dom", "dom.iterable", "es2022"],
+++    "module": "ESNext",
+++    "moduleResolution": "nodenext",
+++    "resolveJsonModule": true,
+++    "allowJs": false,
+++    "skipLibCheck": true,
+++    "strict": true,
+++    "noEmit": true,
+++    "isolatedModules": true,
+++    "esModuleInterop": true,
+++    "forceConsistentCasingInFileNames": true,
+++    "baseUrl": ".",
+++    "paths": {
+++      "@/*": ["src/*"]
+++    },
+++    "types": ["@types/node", "@testing-library/jest-dom"]
+++  },
+++  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+++  "exclude": ["node_modules", ".next", "dist"]
+++}
++diff --git a/vitest.config.ts b/vitest.config.ts
++new file mode 100644
++index 0000000..cd3f63e
++--- /dev/null
+++++ b/vitest.config.ts
++@@ -0,0 +1,31 @@
+++/**
+++ * App: Customer Registration Module
+++ * Package: config
+++ * File: vitest.config.ts
+++ * Version: 0.1.0
+++ * Turns: [1]
+++ * Author: gpt-5-codex
+++ * Date: 2025-10-23T20:17:48Z
+++ * Exports: default
+++ * Description: Configures Vitest with jsdom environment and path aliases for the Next.js app.
+++ */
+++import { dirname, resolve } from "node:path";
+++import { fileURLToPath } from "node:url";
+++import { defineConfig } from "vitest/config";
+++
+++const currentDirectory = dirname(fileURLToPath(import.meta.url));
+++
+++export default defineConfig({
+++  test: {
+++    environment: "jsdom",
+++    globals: true,
+++    coverage: {
+++      reporter: ["text", "json", "html"]
+++    }
+++  },
+++  resolve: {
+++    alias: {
+++      "@": resolve(currentDirectory, "src")
+++    }
+++  }
+++});
+diff --git a/ai/agentic-pipeline/turns/1/manifest.json b/ai/agentic-pipeline/turns/1/manifest.json
+new file mode 100644
+index 0000000..962d09d
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/manifest.json
+@@ -0,0 +1,74 @@
++{
++  "turnId": 1,
++  "timestampUtc": "2025-10-23T20:17:48Z",
++  "actor": {
++    "initiator": "user",
++    "agent": "gpt-5-codex"
++  },
++  "task": {
++    "name": "TASK 01 \u2014 Initialize Project",
++    "inputs": [
++      "ai/context/project_context.md"
++    ],
++    "parameters": {
++      "applicationImplementationPattern": "ui-nextjs"
++    }
++  },
++  "artifacts": {
++    "changelog": "changelog.md",
++    "adr": "adr.md",
++    "diff": "diff.patch",
++    "logs": [],
++    "reports": []
++  },
++  "changes": {
++    "added": [
++      ".eslintrc.json",
++      ".github/workflows/ci.yml",
++      ".npmrc",
++      ".nvmrc",
++      ".prettierrc",
++      "AGENTS.md",
++      "ai/agentic-pipeline/turns/1/adr.md",
++      "ai/agentic-pipeline/turns/1/changelog.md",
++      "ai/agentic-pipeline/turns/1/diff.patch",
++      "ai/agentic-pipeline/turns/1/manifest.json",
++      "ai/agentic-pipeline/turns/1/session_context_values.md",
++      "ai/agentic-pipeline/turns_index.csv",
++      "env.d.ts",
++      "next.config.ts",
++      "package.json",
++      "playwright.config.ts",
++      "postcss.config.js",
++      "src/app/api/health/route.ts",
++      "src/app/error.tsx",
++      "src/app/globals.css",
++      "src/app/layout.tsx",
++      "src/app/loading.tsx",
++      "src/app/not-found.tsx",
++      "src/app/page.tsx",
++      "src/lib/env.ts",
++      "tailwind.config.ts",
++      "tsconfig.json",
++      "vitest.config.ts"
++    ],
++    "modified": [
++      ".gitignore"
++    ],
++    "deleted": []
++  },
++  "metrics": {
++    "filesChanged": 29,
++    "linesAdded": 3834,
++    "linesDeleted": 115,
++    "testsPassed": 0,
++    "testsFailed": 0,
++    "coverageDeltaPct": 0
++  },
++  "validation": {
++    "adrPresent": true,
++    "changelogPresent": true,
++    "lintStatus": "not-run",
++    "testsStatus": "not-run"
++  }
++}
+diff --git a/ai/agentic-pipeline/turns/1/session_context_values.md b/ai/agentic-pipeline/turns/1/session_context_values.md
+new file mode 100644
+index 0000000..a7d9436
+--- /dev/null
++++ b/ai/agentic-pipeline/turns/1/session_context_values.md
+@@ -0,0 +1,8 @@
++# Session Context Values
++
++- turn_id: 1
++- project_context: ai/context/project_context.md
++- application_implementation_pattern: ui-nextjs
++- branch: work
++- task_pipeline_step: TASK 01 — Initialize Project
++- timestamp_utc: 2025-10-23T20:17:48Z
+diff --git a/ai/agentic-pipeline/turns_index.csv b/ai/agentic-pipeline/turns_index.csv
+new file mode 100644
+index 0000000..ef8369c
+--- /dev/null
++++ b/ai/agentic-pipeline/turns_index.csv
+@@ -0,0 +1,2 @@
++turnId,timestampUtc,task,branch,tag,headAfter,testsPassed,testsFailed,coverageDeltaPct
++1,2025-10-23T20:17:48Z,initialize-project,work,turn/1,HEAD,0,0,0
+diff --git a/env.d.ts b/env.d.ts
+new file mode 100644
+index 0000000..643fb0a
+--- /dev/null
++++ b/env.d.ts
+@@ -0,0 +1,17 @@
++/**
++ * App: Customer Registration Module
++ * Package: root
++ * File: env.d.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: ProcessEnv
++ * Description: Declares environment variable types for the Node.js runtime.
++ */
++declare namespace NodeJS {
++  interface ProcessEnv {
++    readonly API_BASE?: string;
++    readonly PLAYWRIGHT_BASE_URL?: string;
++  }
++}
+diff --git a/next.config.ts b/next.config.ts
+new file mode 100644
+index 0000000..05f51ba
+--- /dev/null
++++ b/next.config.ts
+@@ -0,0 +1,24 @@
++/**
++ * App: Customer Registration Module
++ * Package: config
++ * File: next.config.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: config
++ * Description: Configures Next.js with strict mode, typed routes, and server actions support.
++ */
++import type { NextConfig } from "next";
++
++const config: NextConfig = {
++  reactStrictMode: true,
++  experimental: {
++    typedRoutes: true,
++    serverActions: {
++      bodySizeLimit: "2mb"
++    }
++  }
++};
++
++export default config;
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..1019e4d
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,52 @@
++{
++  "name": "customer-registration-module",
++  "version": "0.1.0",
++  "private": true,
++  "description": "Register new customers online.",
++  "scripts": {
++    "dev": "next dev",
++    "build": "next build",
++    "start": "next start",
++    "lint": "next lint",
++    "typecheck": "tsc --noEmit",
++    "test": "vitest",
++    "test:ci": "vitest run --coverage",
++    "e2e": "playwright test",
++    "e2e:ci": "playwright test --reporter=junit"
++  },
++  "engines": {
++    "node": ">=20.0.0"
++  },
++  "dependencies": {
++    "@tanstack/react-query": "^5.59.7",
++    "next": "15.1.0",
++    "react": "19.0.0",
++    "react-dom": "19.0.0",
++    "react-hook-form": "^7.53.1",
++    "zustand": "^4.5.5",
++    "zod": "^3.23.8"
++  },
++  "devDependencies": {
++    "@playwright/test": "^1.47.2",
++    "@testing-library/jest-dom": "^6.4.2",
++    "@testing-library/react": "^16.0.0",
++    "@testing-library/user-event": "^14.5.2",
++    "@types/node": "^20.16.10",
++    "@types/react": "^19.0.0",
++    "@types/react-dom": "^19.0.0",
++    "@typescript-eslint/eslint-plugin": "^8.13.0",
++    "@typescript-eslint/parser": "^8.13.0",
++    "@vitest/coverage-v8": "^2.1.5",
++    "autoprefixer": "^10.4.20",
++    "eslint": "^9.11.1",
++    "eslint-config-next": "^15.1.0",
++    "jsdom": "^24.1.2",
++    "playwright": "^1.47.2",
++    "postcss": "^8.4.49",
++    "prettier": "^3.3.3",
++    "tailwindcss": "^3.4.14",
++    "typescript": "5.9.2",
++    "vitest": "^2.1.5"
++  },
++  "packageManager": "npm@10.9.0"
++}
+diff --git a/playwright.config.ts b/playwright.config.ts
+new file mode 100644
+index 0000000..56eeee9
+--- /dev/null
++++ b/playwright.config.ts
+@@ -0,0 +1,38 @@
++/**
++ * App: Customer Registration Module
++ * Package: config
++ * File: playwright.config.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: config
++ * Description: Defines Playwright settings for running smoke tests against the Next.js app.
++ */
++import { defineConfig, devices } from "@playwright/test";
++
++const config = defineConfig({
++  testDir: "./tests/e2e",
++  timeout: 30_000,
++  use: {
++    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
++    trace: "on-first-retry",
++    video: "retain-on-failure"
++  },
++  reporter: [["list"], ["html", { outputFolder: "./.playwright-report" }]],
++  projects: [
++    {
++      name: "chromium",
++      use: { ...devices["Desktop Chrome"] }
++    }
++  ],
++  webServer: {
++    command: "npm run dev",
++    port: 3000,
++    reuseExistingServer: !process.env.CI,
++    stdout: "pipe",
++    stderr: "pipe"
++  }
++});
++
++export default config;
+diff --git a/postcss.config.js b/postcss.config.js
+new file mode 100644
+index 0000000..87b08f8
+--- /dev/null
++++ b/postcss.config.js
+@@ -0,0 +1,17 @@
++/**
++ * App: Customer Registration Module
++ * Package: config
++ * File: postcss.config.js
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: module.exports
++ * Description: Configures PostCSS with Tailwind CSS and Autoprefixer plugins.
++ */
++module.exports = {
++  plugins: {
++    tailwindcss: {},
++    autoprefixer: {}
++  }
++};
+diff --git a/src/app/api/health/route.ts b/src/app/api/health/route.ts
+new file mode 100644
+index 0000000..a80a3ad
+--- /dev/null
++++ b/src/app/api/health/route.ts
+@@ -0,0 +1,16 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app/api/health
++ * File: route.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: GET
++ * Description: Exposes a simple health endpoint that reports API readiness.
++ */
++import { NextResponse } from "next/server";
++
++export async function GET() {
++  return NextResponse.json({ status: "ok" });
++}
+diff --git a/src/app/error.tsx b/src/app/error.tsx
+new file mode 100644
+index 0000000..20f4643
+--- /dev/null
++++ b/src/app/error.tsx
+@@ -0,0 +1,41 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: error.tsx
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: ErrorBoundary
++ * Description: Client component that presents a friendly fallback and allows retries when errors occur.
++ */
++"use client";
++
++import { useEffect } from "react";
++
++type ErrorBoundaryProps = {
++  readonly error: Error & { digest?: string };
++  readonly reset: () => void;
++};
++
++export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
++  useEffect(() => {
++    console.error(error);
++  }, [error]);
++
++  return (
++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-6 px-6">
++      <h1 className="text-3xl font-bold text-white">Something went wrong</h1>
++      <p className="text-slate-300">
++        We were unable to load the registration experience. Please retry your request.
++      </p>
++      <button
++        type="button"
++        onClick={reset}
++        className="w-fit rounded-full bg-sky-500 px-6 py-2 text-slate-950 font-semibold transition hover:bg-sky-400"
++      >
++        Try again
++      </button>
++    </section>
++  );
++}
+diff --git a/src/app/globals.css b/src/app/globals.css
+new file mode 100644
+index 0000000..07962a9
+--- /dev/null
++++ b/src/app/globals.css
+@@ -0,0 +1,22 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: globals.css
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: n/a
++ * Description: Provides global Tailwind layers and foundational styles for the application.
++ */
++@tailwind base;
++@tailwind components;
++@tailwind utilities;
++
++:root {
++  color-scheme: light;
++}
++
++body {
++  @apply bg-slate-950 text-slate-100 antialiased;
++}
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+new file mode 100644
+index 0000000..ce9f86f
+--- /dev/null
++++ b/src/app/layout.tsx
+@@ -0,0 +1,35 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: layout.tsx
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: metadata, RootLayout
++ * Description: Defines the root layout and metadata for the Customer Registration Module UI.
++ */
++import type { Metadata } from "next";
++import "./globals.css";
++import type { ReactNode } from "react";
++
++export const metadata: Metadata = {
++  title: "Customer Registration",
++  description: "Register new customers online with confidence."
++};
++
++type RootLayoutProps = {
++  readonly children: ReactNode;
++};
++
++export default function RootLayout({ children }: RootLayoutProps) {
++  return (
++    <html lang="en">
++      <body className="min-h-screen bg-slate-950 text-slate-100">
++        <main className="min-h-screen">
++          {children}
++        </main>
++      </body>
++    </html>
++  );
++}
+diff --git a/src/app/loading.tsx b/src/app/loading.tsx
+new file mode 100644
+index 0000000..b83540a
+--- /dev/null
++++ b/src/app/loading.tsx
+@@ -0,0 +1,32 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: loading.tsx
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: LoadingIndicator
++ * Description: Displays a skeleton loader while server components stream registration data.
++ */
++export default function LoadingIndicator() {
++  return (
++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-8 px-6">
++      <div className="h-4 w-32 animate-pulse rounded-full bg-slate-700" />
++      <div className="space-y-4">
++        <div className="h-10 w-3/4 animate-pulse rounded-3xl bg-slate-800" />
++        <div className="h-10 w-2/3 animate-pulse rounded-3xl bg-slate-800" />
++        <div className="h-10 w-1/2 animate-pulse rounded-3xl bg-slate-800" />
++      </div>
++      <div className="grid gap-4 sm:grid-cols-3">
++        {Array.from({ length: 3 }).map((_, index) => (
++          <div key={index} className="space-y-3 rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
++            <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-700" />
++            <div className="h-4 w-full animate-pulse rounded-full bg-slate-800" />
++            <div className="h-4 w-5/6 animate-pulse rounded-full bg-slate-800" />
++          </div>
++        ))}
++      </div>
++    </section>
++  );
++}
+diff --git a/src/app/not-found.tsx b/src/app/not-found.tsx
+new file mode 100644
+index 0000000..1f2f973
+--- /dev/null
++++ b/src/app/not-found.tsx
+@@ -0,0 +1,28 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: not-found.tsx
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: NotFoundPage
++ * Description: Presents a branded message when a user navigates to a missing route.
++ */
++export default function NotFoundPage() {
++  return (
++    <section className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-6 text-center">
++      <h1 className="text-4xl font-bold text-white">Page not found</h1>
++      <p className="text-slate-300">
++        The page you are looking for does not exist. Return to the registration dashboard to
++        continue onboarding customers.
++      </p>
++      <a
++        href="/"
++        className="mx-auto inline-flex items-center justify-center rounded-full border border-slate-700 px-6 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
++      >
++        Go home
++      </a>
++    </section>
++  );
++}
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+new file mode 100644
+index 0000000..8da0882
+--- /dev/null
++++ b/src/app/page.tsx
+@@ -0,0 +1,63 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/app
++ * File: page.tsx
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: HomePage
++ * Description: Renders the landing page that introduces the customer registration workflow.
++ */
++export default function HomePage() {
++  return (
++    <section className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
++      <header className="space-y-4 text-center">
++        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-400">
++          Customer Onboarding
++        </p>
++        <h1 className="text-4xl font-bold text-white sm:text-5xl">
++          Register new customers in minutes.
++        </h1>
++        <p className="text-base text-slate-300 sm:text-lg">
++          Streamline account creation, verify identity, and activate services with a
++          frictionless experience tailored for modern businesses.
++        </p>
++      </header>
++      <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
++        <a
++          href="#"
++          className="rounded-full bg-sky-500 px-8 py-3 text-base font-semibold text-slate-950 shadow-lg shadow-sky-500/40 transition hover:bg-sky-400"
++        >
++          Get started
++        </a>
++        <a
++          href="#"
++          className="rounded-full border border-slate-700 px-8 py-3 text-base font-semibold text-slate-200 transition hover:border-slate-500"
++        >
++          View documentation
++        </a>
++      </div>
++      <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900/60 p-8 sm:grid-cols-3">
++        <div>
++          <h2 className="text-lg font-semibold text-white">Progress tracking</h2>
++          <p className="mt-2 text-sm text-slate-400">
++            Monitor every onboarding milestone with real-time status updates and alerts.
++          </p>
++        </div>
++        <div>
++          <h2 className="text-lg font-semibold text-white">Secure identity checks</h2>
++          <p className="mt-2 text-sm text-slate-400">
++            Integrate verification providers and enforce policies without manual steps.
++          </p>
++        </div>
++        <div>
++          <h2 className="text-lg font-semibold text-white">Analytics ready</h2>
++          <p className="mt-2 text-sm text-slate-400">
++            Surface conversion insights and optimize registration flows using built-in metrics.
++          </p>
++        </div>
++      </div>
++    </section>
++  );
++}
+diff --git a/src/lib/env.ts b/src/lib/env.ts
+new file mode 100644
+index 0000000..6981e3c
+--- /dev/null
++++ b/src/lib/env.ts
+@@ -0,0 +1,25 @@
++/**
++ * App: Customer Registration Module
++ * Package: src/lib
++ * File: env.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: envSchema, AppEnv, env
++ * Description: Validates environment variables shared across client and server contexts.
++ */
++import { z } from "zod";
++
++export const envSchema = z.object({
++  API_BASE: z
++    .string()
++    .url()
++    .default("http://localhost:3000")
++});
++
++export type AppEnv = z.infer<typeof envSchema>;
++
++export const env: AppEnv = envSchema.parse({
++  API_BASE: process.env.API_BASE
++});
+diff --git a/tailwind.config.ts b/tailwind.config.ts
+new file mode 100644
+index 0000000..4e224c4
+--- /dev/null
++++ b/tailwind.config.ts
+@@ -0,0 +1,22 @@
++/**
++ * App: Customer Registration Module
++ * Package: config
++ * File: tailwind.config.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: config
++ * Description: Tailwind CSS configuration defining content paths and project extensions.
++ */
++import type { Config } from "tailwindcss";
++
++const config: Config = {
++  content: ["./src/**/*.{ts,tsx}"],
++  theme: {
++    extend: {}
++  },
++  plugins: []
++};
++
++export default config;
+diff --git a/tsconfig.json b/tsconfig.json
+new file mode 100644
+index 0000000..8d77b17
+--- /dev/null
++++ b/tsconfig.json
+@@ -0,0 +1,23 @@
++{
++  "compilerOptions": {
++    "target": "ES2022",
++    "lib": ["dom", "dom.iterable", "es2022"],
++    "module": "ESNext",
++    "moduleResolution": "nodenext",
++    "resolveJsonModule": true,
++    "allowJs": false,
++    "skipLibCheck": true,
++    "strict": true,
++    "noEmit": true,
++    "isolatedModules": true,
++    "esModuleInterop": true,
++    "forceConsistentCasingInFileNames": true,
++    "baseUrl": ".",
++    "paths": {
++      "@/*": ["src/*"]
++    },
++    "types": ["@types/node", "@testing-library/jest-dom"]
++  },
++  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
++  "exclude": ["node_modules", ".next", "dist"]
++}
+diff --git a/vitest.config.ts b/vitest.config.ts
+new file mode 100644
+index 0000000..cd3f63e
+--- /dev/null
++++ b/vitest.config.ts
+@@ -0,0 +1,31 @@
++/**
++ * App: Customer Registration Module
++ * Package: config
++ * File: vitest.config.ts
++ * Version: 0.1.0
++ * Turns: [1]
++ * Author: gpt-5-codex
++ * Date: 2025-10-23T20:17:48Z
++ * Exports: default
++ * Description: Configures Vitest with jsdom environment and path aliases for the Next.js app.
++ */
++import { dirname, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
++import { defineConfig } from "vitest/config";
++
++const currentDirectory = dirname(fileURLToPath(import.meta.url));
++
++export default defineConfig({
++  test: {
++    environment: "jsdom",
++    globals: true,
++    coverage: {
++      reporter: ["text", "json", "html"]
++    }
++  },
++  resolve: {
++    alias: {
++      "@": resolve(currentDirectory, "src")
++    }
++  }
++});
