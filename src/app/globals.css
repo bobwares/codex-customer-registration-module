@@ -1,0 +1,57 @@
+/**
+ * App: Customer Registration Module
+ * Package: src/app
+ * File: globals.css
+ * Version: 0.1.0
+ * Turns: 1
+ * Author: AI Coding Agent
+ * Date: 2025-11-10T20:52:42Z
+ * Exports: CSSUtilities
+ * Description: Establishes base typography and layout styling for the registration pages.
+ */
+:root {
+  color-scheme: light;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+a {
+  color: inherit;
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1.5rem;
+}
+
+section {
+  max-width: 720px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  padding: 2.5rem;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin: 0 0 1rem 0;
+}
+
+ul {
+  padding-left: 1.5rem;
+}
